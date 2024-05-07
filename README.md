@@ -2,6 +2,12 @@
 
 This project provides a robust starting point for applications built with Rails 7 and React, featuring a structured environment with a set of predefined functionalities and configurations to expedite the development process.
 
+### Dependencies
+
+- 
+- Postgres
+- PostGIS
+
 ### Installation
 
 ```shell

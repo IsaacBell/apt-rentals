@@ -1,50 +1,63 @@
 # frozen_string_literal: true
 
-# Represents a user of the application.
 class User < ApplicationRecord
   include Cachable
   include Serializable
+  
+  USER_TYPES = {realtor: 'realtor', admin: 'admin', user: 'user'}.freeze
 
+  def self.all_user_types
+    USER_TYPES.map { |key, val| val }
+  end
+  
   paginates_per 50
+  
+  set_cache_expiry 6.hours
 
-  USER_TYPES = %w[responder investigator admin user].freeze
 
   # devise :database_authenticatable, :registerable,
   #        :recoverable, :rememberable, :trackable, :validatable
 
   belongs_to :agency, optional: true
+  has_many :properties
 
   scope :active, -> { where(deleted: false) }
+  scope :deleted, -> { where(deleted: true) }
 
-  validates :email, :radar_user_id, :device_id, presence: true
-  validates :uid, uniqueness: { scope: :provider_id }
-  validates :email, uniqueness: true
-  validates :type, inclusion: { in: USER_TYPES }
-  validate :ensure_responder_has_agency
+  validates :email, presence: true, uniqueness: true
+  validates :user_type, inclusion: { in: self.all_user_types }
+  validate :ensure_non_realtor_user_has_no_properties
 
-  index({ phone: 'text' })
-  index({ email: 1 }, { unique: true })
-  index({ uid: 1, provider: 1 }, { unique: true })
+  self.all_user_types.each do |user_type|
+    user_type = user_type.to_s.demodulize.parameterize
+    scope :"#{user_type.pluralize}", -> { where(user_type:) }
+    scope :"active_#{user_type.pluralize}", -> { active.where(user_type:) }
+    scope :"deleted_#{user_type.pluralize}", -> { deleted.where(user_type:) }
 
-  USER_TYPES.each do |type|
-    type = type.to_s.demodulize.parameterize
-    scope :"#{type.pluralize}", -> { where(type:) }
-    scope :"active_#{type.pluralize}", -> { active.where(type:) }
-
-    define_method("#{type}?") do
-      self.type == type
+    define_method("#{user_type}?") do
+      self.user_type == user_type
     end
   end
 
   def self.find(id)
-    active.where(id:).to_a.first
+    active.where(id:).first
   end
 
-  def self.find_by_uid(uid)
-    active.where(uid:).to_a.first
+  def self.find_by_email(email)
+    active.where(email:).first
   end
 
-  def self.find_by_name(name)
-    active.where(name:).to_a.first
+  def can_manage_property?(property)
+    property.in?(properties)
+  end
+
+  def has_properties?
+    properties.any?
+  end
+
+  private
+
+  def ensure_non_realtor_user_has_no_properties
+    errors.add('Standard users cannot update property data') if !realtor? && has_properties?
   end
 end

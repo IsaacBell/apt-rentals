@@ -2,8 +2,10 @@ require_relative 'boot'
 
 require 'rails'
 
-# require "active_record/railtie" rescue LoadError
-# require "active_storage/engine" rescue LoadError
+require "active_record/railtie" rescue LoadError
+require "active_storage/engine" rescue LoadError
+require 'devise/orm/active_record' rescue LoadError
+
 begin
   require 'action_controller/railtie'
 rescue StandardError

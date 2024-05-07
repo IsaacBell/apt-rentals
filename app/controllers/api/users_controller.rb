@@ -38,7 +38,8 @@ module Api
     private
 
     def user
-      @user ||= User.find_by_uid(params.require(:uid))&.serialize
+      id = params[:id] || user_params[:id]
+      @user ||= User.find_by_id(id)&.serialize
     end
 
     def users
@@ -49,7 +50,7 @@ module Api
       params
         .require(:user)
         .permit(
-          :uid, :email, :password, :password_conf, :phone, :newsletter_opt_in
+          :id, :email, :password, :password_conf, :phone, :newsletter_opt_in
         )
     end
   end
