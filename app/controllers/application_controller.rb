@@ -70,6 +70,6 @@ class ApplicationController < ActionController::Base
   end
 
   def add_diagnostics_to_bugsnag(event)
-    event.add_metadata(:diagnostics, {add_custom_attrs: 'here'} })
+    event.add_metadata(:diagnostics, {add_custom_attrs: 'here'})
   end
 end

@@ -15,7 +15,7 @@ module Api
       if (u = User.create(user_params))
         render json: u.serialize
       else
-        render head: :unprocessable_entity
+        head :unprocessable_entity
       end
     end
 
@@ -23,15 +23,15 @@ module Api
       if user&.update_attributes(user_params)
         render json: user.serialize
       else
-        render head: :conflict
+        head :conflict
       end
     end
 
     def destroy
       if user&.delete
-        render head: :ok
+        head :ok
       else
-        render head: :bad_request
+        head :bad_request
       end
     end
 

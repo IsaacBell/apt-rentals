@@ -12,14 +12,20 @@ module Cachable
       2.hours
     end
 
-    def update(**attrs)
-      out = super(attrs)
-      cache_if_id_present(out)
-      out
+    def cache_key
+      "#{self.class.to_s.demodulize.underscore}:#{id}"
+    end
+
+    def update(attrs)
+      super(attrs)
+      cache_if_id_present(self)
+      true
+    rescue ActiveRecord::NotNullViolation => e
+      false
     end
 
     def delete
-      with_cache_retrieval do
+      with_cache_retrieval(id) do
         update_attributes(deleted: true)
       end
       succeeded = save
@@ -51,8 +57,12 @@ module Cachable
       self.cache_expiry = time
     end
 
+    def cache_key(id)
+      "#{name.underscore}:#{id}"
+    end
+
     def find(id)
-      with_cache_retrieval { super(id) }
+      with_cache_retrieval(id) { super(id) }
     end
 
     def create(**attrs)
@@ -61,7 +71,8 @@ module Cachable
       out
     end
 
-    def with_cache_retrieval(key = cache_key)
+    def with_cache_retrieval(id)
+      key = cache_key(id)
       cached = Rails.cache.redis.get(key&.to_s)
       return cached if cached.present?
 
