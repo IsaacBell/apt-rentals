@@ -57,11 +57,11 @@ const App: FC = () => {
     recognitionRef.current.interimResults = true;
     recognitionRef.current.lang = 'en-US';
 
-    recognitionRef.current.onresult = (event) => {
+    recognitionRef.current.onresult = (event: any) => {
       const current = event.resultIndex;
-      const { transcript } = event.results[current][0];
+      const transcript: string = event.results[current][0].transcript;
       if (event.results[current].isFinal) {
-        setTranscripts((prevTranscripts) => [...prevTranscripts, transcript]);
+        setTranscripts((prevTranscripts: string[]) => [...prevTranscripts, transcript ]);
         handleSpeech(transcript);
       } else {
         setTentative(transcript);

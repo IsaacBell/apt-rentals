@@ -58,7 +58,8 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "build": "esbuild ./app/javascript/react/src/index.js --bundle --minify --sourcemap --outfile=./app/assets/builds/bundle.js",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "start": "esbuild ./app/javascript/react/src/index.js --bundle --servedir=./app --outfile=./app/assets/builds/bundle.js"
   },
   "devDependencies": {
     "@babel/core": "^7.22.9",
