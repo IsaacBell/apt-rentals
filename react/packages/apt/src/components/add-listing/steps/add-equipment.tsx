@@ -51,7 +51,7 @@ export default function AddEquipment() {
           tag="h3"
           className="mb-4 text-lg !font-medium md:!text-xl lg:mb-6 2xl:!text-2xl"
         >
-          On Board Equipments
+          Amenities
         </Text>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
           {vendorData.equipment.map((item, index) => (

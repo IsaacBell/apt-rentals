@@ -9,7 +9,7 @@ import Upload from '@/components/ui/upload';
 
 let newImgArr: any = [];
 
-export default function AddBoatPhotos() {
+export default function AddPropertyPhotos() {
   const setStep = useSetAtom(stepAtom);
   const [store, setStore] = useAtom(storeAtom);
 

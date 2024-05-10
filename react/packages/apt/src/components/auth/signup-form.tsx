@@ -2,37 +2,24 @@
 
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Routes } from '@/config/routes';
 import Input from '@/components/ui/form-fields/input';
 import Button from '@/components/ui/button';
 import Checkbox from '@/components/ui/form-fields/checkbox';
+import { SignUpType, signUpSchema } from '@/types';
+import useAuth from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-const signUpSchema = z
-  .object({
-    firstName: z.string(),
-    lastName: z.string(),
-    email: z
-      .string()
-      .min(1, 'The email is required.')
-      .email({ message: 'The email is invalid.' }),
-    password: z
-      .string()
-      .min(8, { message: 'Password must be 8 character long.' }),
-    confirmPassword: z
-      .string()
-      .min(8, { message: 'Password must be 8 character long.' }),
-    acceptPolicy: z.boolean(),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match.",
-    path: ['confirmPassword'],
-  });
-
-type SignUpType = z.infer<typeof signUpSchema>;
+type UserTypeSelection = 'user' | 'realtor' | null;
 
 export default function SignUpForm() {
+  const router = useRouter();
+  const [isRealtor, setIsRealtor] = useState<boolean>(false);
+  const { register: supabaseRegisterUser } = useAuth();
+
   const {
     register,
     handleSubmit,
@@ -41,9 +28,14 @@ export default function SignUpForm() {
     resolver: zodResolver(signUpSchema),
   });
 
-  // TO-DO: Send data to API onSubmit.
   function handleFormSubmit(data: SignUpType) {
+    if (isRealtor)
+      data.userType = 'realtor';
+    
     console.log('Submitted data', data);
+    
+    supabaseRegisterUser(data);
+    router.push(Routes.auth.signIn);
   }
 
   return (
@@ -53,7 +45,7 @@ export default function SignUpForm() {
           type="text"
           label="First name"
           className="mb-4"
-          error={errors?.firstName?.message}
+          error={errors?.firstName?.message ?? undefined}
           required
           {...register('firstName')}
         />
@@ -61,7 +53,7 @@ export default function SignUpForm() {
           type="text"
           label="Last name"
           className="mb-4"
-          error={errors?.lastName?.message}
+          error={errors?.lastName?.message ?? undefined}
           {...register('lastName')}
         />
       </div>
@@ -69,7 +61,7 @@ export default function SignUpForm() {
         type="text"
         label="Email"
         className="mb-4"
-        error={errors?.email?.message}
+        error={errors?.email?.message ?? undefined}
         required
         {...register('email')}
       />
@@ -78,7 +70,7 @@ export default function SignUpForm() {
           type="password"
           label="Password"
           className="mb-4"
-          error={errors?.password?.message}
+          error={errors?.password?.message ?? undefined}
           required
           {...register('password')}
         />
@@ -86,9 +78,19 @@ export default function SignUpForm() {
           type="password"
           label="Confirm password"
           className="mb-4"
-          error={errors?.confirmPassword?.message}
+          error={errors?.confirmPassword?.message ?? undefined}
           required
           {...register('confirmPassword')}
+        />
+        <Checkbox
+          size="sm"
+          label="Register me as a realtor"
+          labelClassName="ml-2"
+          inputClassName="!text-gray-dark"
+          checked={isRealtor}
+          onClick={() => {
+            setIsRealtor(!isRealtor)
+          }}
         />
       </div>
       <Checkbox

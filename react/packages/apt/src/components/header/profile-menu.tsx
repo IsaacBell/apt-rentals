@@ -75,12 +75,12 @@ export default function ProfileMenu({ className }: { className?: string }) {
         )}
       >
         <Menu.Button className="relative h-full w-full rounded-full bg-white">
-          <Avatar
+          {/* <Avatar
             className="cursor-pointer"
             src="https://s3.amazonaws.com/redqteam.com/isomorphic-reloaded-image/profilepic.png"
             rounded="full"
             size="100%"
-          />
+          /> */}
         </Menu.Button>
         <Transition
           as={Fragment}

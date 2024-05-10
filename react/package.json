@@ -18,7 +18,6 @@
     "format:apt": "yarn workspace @tripfinder/apt run format",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "firebase-deploy:hotel": "yarn build:hotel && yarn workspace @tripfinder/hotel-cra run host:firebase",
     "prepare": "husky install"
   },
   "devDependencies": {

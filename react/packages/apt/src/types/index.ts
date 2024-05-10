@@ -1,3 +1,37 @@
+import { z } from 'zod';
+import { User } from "@supabase/supabase-js";
+
+export interface UserType extends User {
+  role?: string;
+  name?: string;
+  userType?: string;
+}
+
+export const signUpSchema = z
+  .object({
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z
+      .string()
+      .min(1, 'The email is required.')
+      .email({ message: 'The email is invalid.' }),
+    password: z
+      .string()
+      .min(8, { message: 'Password must be 8 character long.' }),
+    confirmPassword: z
+      .string()
+      .min(8, { message: 'Password must be 8 character long.' }),
+    acceptPolicy: z.boolean(),
+    userType: z.string().optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match.",
+    path: ['confirmPassword'],
+  });
+
+
+export type SignUpType = z.infer<typeof signUpSchema>;
+
 export type DestinationTypes = {
   thumbnail: string;
   slug: string;

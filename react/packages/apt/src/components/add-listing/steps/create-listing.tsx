@@ -8,16 +8,19 @@ import { stepAtom, storeAtom } from '@/components/add-listing/add-listing';
 import { DuplicateIcon } from '@/components/icons/duplicate-icon';
 import { CakeIcon } from '@/components/icons/cake-icon';
 import Text from '@/components/ui/typography/text';
+import useAuth from '@/hooks/use-auth';
 
 export default function CreateListing() {
   const router = useRouter();
+  const { currentUser } = useAuth();
   const setStep = useSetAtom(stepAtom);
   const setStore = useSetAtom(storeAtom);
+
   return (
     <>
       <div className="w-full md:w-[548px] xl:w-[648px]">
         <Text tag="h2" className="text-xl md:!text-2xl 2xl:!text-3xl">
-          Welcome back Helene
+          Welcome back {currentUser?.name}
         </Text>
         <Text
           tag="h3"

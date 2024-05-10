@@ -5,15 +5,18 @@ import Image from 'next/image';
 import { InstaSolidIcon } from '@/components/icons/instagram-solid-icon';
 import { TwitterIcon } from '@/components/icons/twitter-icon';
 import Text from '@/components/ui/typography/text';
+import useAuth from '@/hooks/use-auth';
 
 export default function VendorProfileCard() {
+  const { user } = useAuth();
+
   return (
     <div className="relative flex items-center justify-center px-4 text-center md:mt-8 md:h-[380px] md:justify-between md:overflow-hidden md:rounded-lg md:px-0 md:shadow-card lg:h-[410px] 2xl:mt-12 2xl:h-[460px]">
       <div className="z-10 mt-20 flex h-auto w-full max-w-[343px] flex-col items-center justify-center rounded-lg bg-white p-8 shadow-card md:mt-0 md:h-full md:rounded-none md:shadow-none 2xl:max-w-[537px]">
         <div className="relative inline-block h-[120px] w-[120px] overflow-hidden rounded-full lg:h-40 lg:w-40">
           <Image
             src={vendorData.vendor.img}
-            alt={vendorData.vendor.name}
+            alt={user?.name ?? ''}
             fill
             priority
             sizes="(min-width: 320) 100vw, 100vw"
@@ -21,9 +24,9 @@ export default function VendorProfileCard() {
           />
         </div>
         <Text tag="h3" className="mt-5 text-lg">
-          Hi, I’m {vendorData.vendor.name}
+          Hi, I’m {user?. name ?? vendorData.vendor.name}
         </Text>
-        <Text className="mt-2 !text-gray">{vendorData.vendor.username}</Text>
+        <Text className="mt-2 !text-gray">{user?.email ?? ''}</Text>
         <a
           rel="noreferrer"
           href="https://instagram.com"

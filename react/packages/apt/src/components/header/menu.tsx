@@ -34,18 +34,18 @@ const menuItems = [
     dropdownItems: [
       {
         id: 1,
-        label: 'Vendor Profile',
+        label: 'Example Realtor Profile',
         path: Routes.public.userID('fabio-jaction'),
       },
-      {
-        id: 2,
-        label: 'Listing Details',
-        path: '/listing/perfect-set-up-for-lake-union-cruising',
-      },
+      // {
+      //   id: 2,
+      //   label: 'Listing Details',
+      //   path: '/listing/perfect-set-up-for-lake-union-cruising',
+      // },
       {
         id: 3,
         label: 'Coming Soon',
-        path: Routes.public.trips,
+        path: '#',
       },
       {
         id: 4,

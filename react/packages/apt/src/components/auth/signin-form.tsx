@@ -10,6 +10,9 @@ import Button from '@/components/ui/button';
 import Checkbox from '@/components/ui/form-fields/checkbox';
 import useAuth from '@/hooks/use-auth';
 import { useModal } from '@/components/modals/context';
+import { useRouter } from 'next/navigation';
+import { UserType } from '@/types';
+import { useState } from 'react';
 
 const loginInfoSchema = z.object({
   email: z
@@ -20,14 +23,17 @@ const loginInfoSchema = z.object({
     .string()
     .min(8, { message: 'Password must be 8 character long.' }),
   remember: z.boolean(),
+  userType: z
+    .string()
+    .optional(),
 });
 
 type SignInType = z.infer<typeof loginInfoSchema>;
 
 export default function SigninForm() {
+  const router = useRouter();
   const { authorize } = useAuth();
   const { closeModal } = useModal();
-
   const {
     register,
     handleSubmit,
@@ -36,11 +42,17 @@ export default function SigninForm() {
     resolver: zodResolver(loginInfoSchema),
   });
 
-  // TO-DO: Send data to API onSubmit.
   function handleFormSubmit(data: SignInType) {
     console.log('Submitted data', data);
-    authorize();
     closeModal();
+
+    let user: UserType | null;
+    authorize(data.email, data.password).then(_user => {
+      user = _user;
+      console.log('authorized user: ', user);
+      if (!!user) 
+        router.push(Routes.public.addListing);
+    })
   }
 
   return (
@@ -69,6 +81,7 @@ export default function SigninForm() {
           inputClassName="!text-gray-dark"
           {...register('remember')}
         />
+        
         <Link
           href={Routes.auth.forgotPassword}
           className="  text-sm font-semibold leading-6 text-primary underline"

@@ -7,8 +7,8 @@ import dynamic from 'next/dynamic';
 const CreateListing = dynamic(
   () => import('@/components/add-listing/steps/create-listing'),
 );
-const BoatInfo = dynamic(
-  () => import('@/components/add-listing/steps/boat-info'),
+const PropertyInfo = dynamic(
+  () => import('@/components/add-listing/steps/property-info'),
 );
 const AddBoatPhotos = dynamic(
   () => import('@/components/add-listing/steps/upload-photos'),
@@ -27,31 +27,19 @@ const StepsEnd = dynamic(
 );
 
 export const stepAtom = atom(1);
-export const storeAtom = atomWithStorage('addNewBoat', {
-  boatName: '',
-  boatType: '',
-  pricePerDay: 10,
-  boatDescription: '',
-  beadRooms: 0,
-  bathRooms: 0,
-  guests: 1,
+export const storeAtom = atomWithStorage('addNewProperty', {
+  title: '',
+  description: '',
+  area: 0,
+  rooms: 0,
+  price: 0,
+  sold: false,
+  deleted: false,
   location: '',
-  phoneNumber: '',
-  equipment: [],
+  userId: '',
+  createdAt: null, // This will be set by the server
+  updatedAt: null, // This will be set by the server
   images: [],
-  specification: {
-    engine: '',
-    engineTorque: '',
-    fuelSystem: '',
-    boreStroke: '',
-    infotainmentSystem: '',
-    displacement: '',
-    fuelCapacity: '',
-    compressionRatio: '',
-    luggageCapacity: '',
-    fuelEconomy: '',
-    weight: '',
-  },
 });
 
 export default function AddListing() {
@@ -62,7 +50,7 @@ export default function AddListing() {
       stepComponent = <CreateListing />;
       break;
     case 2:
-      stepComponent = <BoatInfo />;
+      stepComponent = <PropertyInfo />;
       break;
     case 3:
       stepComponent = <AddBoatPhotos />;
@@ -71,12 +59,6 @@ export default function AddListing() {
       stepComponent = <AddLocation />;
       break;
     case 5:
-      stepComponent = <AddEquipment />;
-      break;
-    case 6:
-      stepComponent = <AddSpecification />;
-      break;
-    case 7:
       stepComponent = <StepsEnd />;
       break;
   }

@@ -17,7 +17,7 @@ export default function SetPrice({ value, countBy, onChange }: SetPriceTypes) {
         <Text tag="h3" className="text-2xl">
           ${value}
         </Text>
-        per day
+        per month
       </div>
       <div className="flex items-center gap-2">
         <ActionIcon
