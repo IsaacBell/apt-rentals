@@ -9,7 +9,7 @@ class CreateProperties < ActiveRecord::Migration[7.0]
       t.boolean :sold, null: false, default: false
       t.boolean :deleted, null: false, default: false
       t.st_point :location, null: false, geographic: true
-      t.references :user, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: true, type: :uuid
 
       t.timestamps
     end

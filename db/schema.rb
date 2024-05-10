@@ -58,7 +58,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_07_063301) do
     t.boolean "sold", default: false, null: false
     t.boolean "deleted", default: false, null: false
     t.geography "location", limit: {:srid=>4326, :type=>"st_point", :geographic=>true}, null: false
-    t.bigint "user_id", null: false
+    t.uuid "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["location"], name: "index_properties_on_location", using: :gist
@@ -66,10 +66,20 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_07_063301) do
     t.index ["user_id"], name: "index_properties_on_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string "user_type"
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
     t.string "phone"
+    t.string "password_hash"
+    t.string "confirmation_token"
+    t.datetime "confirmed_at", precision: nil
+    t.datetime "confirmation_sent_at", precision: nil
+    t.string "recovery_token"
+    t.datetime "recovery_sent_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
+    t.jsonb "raw_app_meta_data"
+    t.jsonb "raw_user_meta_data"
+    t.boolean "is_super_admin", default: false
+    t.string "user_type"
     t.boolean "deleted"
     t.bigint "agency_id"
     t.datetime "created_at", null: false
