@@ -13,8 +13,8 @@ export function useDB() {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
-    const client = await createClient(supabaseUrl, supabaseAnonKey)
-    await setSupabaseClient(client);
+    const client = await createClient(supabaseUrl, supabaseAnonKey);
+    setSupabaseClient(client);
 
     return client
   }
@@ -40,10 +40,24 @@ export function useDB() {
     return (users ?? [])[0];
   }
 
+  const saveUser = async (user: UserType): Promise<boolean> => {
+    const res = fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ user })
+    })
+
+    return (await res).status === 200;
+  }
+
   return {
     initSupabase,
     getUser,
     getRealtor,
+    saveUser,
     supabase,
   };
 }

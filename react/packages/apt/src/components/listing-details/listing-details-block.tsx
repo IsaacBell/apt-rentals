@@ -17,6 +17,8 @@ import Button from '@/components/ui/button';
 
 export default function ListingDetails() {
   const { openModal } = useModal();
+  const property = { address: '' }
+
   return (
     <>
       <div className="flex justify-between gap-5 lg:gap-8 xl:gap-12 4xl:gap-16">
@@ -26,7 +28,7 @@ export default function ListingDetails() {
           <EquipmentBlock equipment={vendorData.equipment} />
           <SpecificationBlock specifications={vendorData.specifications} />
           <VendorBlock stats={reviewsData.stats} vendor={vendorData.vendor} />
-          <LocationBlock />
+          <LocationBlock address={property.address} />
           <CalenderBlock />
           <ReviewBlock reviewsData={reviewsData} />
           <ChatBlock />

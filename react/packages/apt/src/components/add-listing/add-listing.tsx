@@ -40,6 +40,8 @@ export const storeAtom = atomWithStorage('addNewProperty', {
   createdAt: null, // This will be set by the server
   updatedAt: null, // This will be set by the server
   images: [],
+  coordinates: [0.0,0.0],
+  phoneNumber: '',
 });
 
 export default function AddListing() {

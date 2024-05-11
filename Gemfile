@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.3.1'
@@ -36,6 +36,7 @@ gem 'jwt'
 gem 'oj', '~> 3.15'
 gem 'pg', '~> 1.2'
 gem 'puma', '~> 5.0'
+gem 'rack-cors'
 gem 'rails', '~> 7.0.6'
 gem 'redis'
 gem 'sidekiq', '~> 7.1'
@@ -44,7 +45,7 @@ gem 'spring'
 gem 'sprockets-rails'
 gem 'statesman', '~> 10.0.0'
 gem 'tailwindcss-rails', '~> 2.0'
-gem 'tzinfo-data', platforms: %i[ mingw mswin x64_mingw jruby ]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 group :development do
   gem 'erb2haml', '~> 0.1.5'
@@ -55,22 +56,20 @@ group :test do
   gem 'capybara'
   gem 'cucumber-rails'
   gem 'database_cleaner-active_record'
+  gem 'factory_bot_rails'
   gem 'faker'
   gem 'shoulda-matchers', '~> 6.0'
-  gem "factory_bot_rails"
   # gem 'selenium-webdriver'
   # gem 'webdrivers'
   # gem 'webmock'
 end
 
 group :development, :test do
+  gem 'binding_of_caller'
   gem 'debug', '>= 1.0.0'
+  gem 'pry-rails'
   gem 'rspec-rails'
   gem 'rubocop', '~> 1.54'
-  gem 'binding_of_caller'
-  gem 'pry-rails'
 end
 
-
-
-gem "factory_bot", "~> 6.4"
+gem 'factory_bot', '~> 6.4'

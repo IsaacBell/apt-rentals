@@ -103,7 +103,7 @@ export const reservationColumn = (
     width: 200,
     render: (customer: any) => (
       <div className="flex items-center gap-3">
-        <Avatar src={customer.avatar} size="40" />
+        {/* <Avatar src={customer.avatar} size="40" /> */}
         <p className="whitespace-nowrap">{customer.name}</p>
       </div>
     ),

@@ -53,7 +53,7 @@ export default function ChatSidebar({
                 item.id === currentChat.id && activeChatClassName,
               )}
             >
-              <Avatar src={item.image} size="40" />
+              {/* <Avatar src={item.image} size="40" /> */}
               <div className="ml-3 rtl:ml-0 rtl:mr-3">
                 <Text className="overflow-ellipsis whitespace-nowrap text-sm font-normal text-gray md:text-base">
                   {item.name}

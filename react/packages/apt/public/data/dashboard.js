@@ -1,23 +1,23 @@
 export const dashboardCardData = [
     {
       id: 'cardone',
-      title: 'New Orders',
-      order: 157,
-      last: 178,
+      title: 'Total Listings',
+      order: 1234,
+      last: 5678,
       price: null,
     },
     {
       id: 'cardtwo',
-      title: 'New Orders Revenue',
+      title: 'Average Listing Price',
       order: null,
-      last: 12,
-      price: 1489.59,
+      last: '$0',
+      price: 1234.56,
     },
     {
       id: 'cardthree',
-      title: 'Avg. Order Revenue',
+      title: 'Total Revenue',
       order: null,
-      last: 12,
-      price: 789.99,
+      last: '$0',
+      price: 1234.55,
     },
   ];

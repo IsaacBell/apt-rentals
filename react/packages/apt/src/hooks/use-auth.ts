@@ -5,42 +5,83 @@ import { createClient, User, Session } from '@supabase/supabase-js';
 import { useDB } from './use-db';
 import { SignUpType, UserType } from '@/types';
 
-
+type AuthErr = Record<string, string>;
 
 export default function useAuth() {
-  const { supabase, initSupabase } = useDB();
+  const { supabase, initSupabase, saveUser } = useDB();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [user, setUser] = useState<UserType | null>(null);
   const [session, setSession] = useState<Session | null>(null);
+  const [sessionErrs, setSessionErrs] = useState<AuthErr[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!supabase) initSupabase();
   }, [])
 
   useEffect(() => {
-    if (!supabase) return;
+    if (!!sessionErrs.length) console.trace(`${sessionErrs.length} session errors:`, sessionErrs);
+  }, [])
 
-    const getSession = async () => {
+  useEffect(() => {
+    const getUserFromStorage = () => {
+      const storedUser = localStorage.getItem('user');
+      const storedSession = localStorage.getItem('session');
+
+      if (storedUser && storedSession) {
+        console.log('retrieve cached user session')
+        setUser(JSON.parse(storedUser));
+        setSession(JSON.parse(storedSession));
+        setIsAuthorized(true);
+        setIsLoading(false);
+      } else {
+        fetchUserAndSession();
+      }
+    };
+
+    const fetchUserAndSession = async () => {
+      if (!supabase) return;
+
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthorized(!!session);
       setUser(session?.user as UserType | null);
-      console.log('user', session?.user)
+      setIsLoading(false);
+      console.log('-----fetchUserAndSession-----------')
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (event, sessionData) => {
+          setIsAuthorized(!!sessionData);
+          setSession(sessionData);
+          setUser(sessionData?.user as UserType | null);
+
+          // Store user and session in localStorage
+          if (sessionData?.user) {
+            localStorage.setItem('user', JSON.stringify(sessionData.user));
+            localStorage.setItem('session', JSON.stringify(sessionData));
+          } else {
+            localStorage.removeItem('user');
+            localStorage.removeItem('session');
+          }
+        }
+      );
+
+      return () => {
+        subscription.unsubscribe();
+      };
     };
 
-    getSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setIsAuthorized(!!session);
-        setSession(session);
-        setUser(session?.user as UserType | null);
-      }
-    );
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    getUserFromStorage();
   }, [supabase]);
+
+  const getSession = async (): Promise<UserType | null> => {
+    if (!supabase) return null;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    setIsAuthorized(!!session);
+    setUser(session?.user as UserType | null);
+    console.log('user', session?.user)
+    return session?.user as UserType;
+  };
 
   const register = async (userData: SignUpType): Promise<UserType | null> => {
     if (!supabase) {
@@ -68,6 +109,9 @@ export default function useAuth() {
 
     setSession(data.session);
     setUser(user);
+
+    saveUser(user);
+
     return user
   }
 
@@ -110,6 +154,9 @@ export default function useAuth() {
     authorize,
     unauthorize,
     isAuthorized,
+    getSession,
+    isLoading,
+    initSupabase,
     isRealtor: user?.userType == 'realtor',
     currentUser: user,
   };

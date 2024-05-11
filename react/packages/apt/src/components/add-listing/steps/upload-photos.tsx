@@ -29,7 +29,7 @@ export default function AddPropertyPhotos() {
       <form noValidate onSubmit={(e) => e.preventDefault()}>
         <Upload
           accept="img"
-          label="Add some photos of your boat"
+          label="Add some photos"
           onDropAccepted={handleDropAccepted}
           labelClassName="md:!text-2xl md:leading-7 mb-5 md:mb-6"
           iconClassName="w-12 h-16 md:w-20 md:h-20 !text-gray-dark"

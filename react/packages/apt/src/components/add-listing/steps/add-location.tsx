@@ -11,17 +11,22 @@ import { MapMarkerIcon } from '@/components/icons/map-marker';
 import Input from '@/components/ui/form-fields/input';
 import Text from '@/components/ui/typography/text';
 import MapView from '@/components/ui/map-view';
+import useAuth from '@/hooks/use-auth';
+import { useState } from 'react';
 
 const FormDataSchema = z.object({
   phoneNumber: z.string().min(7, { message: 'Minimum 7 digits!' }),
   location: z.string().optional(),
+  coordinates: z.array(z.number()),
 });
 
 type FormDataType = z.infer<typeof FormDataSchema>;
 
 export default function AddLocation() {
+  const { user } = useAuth();
   const setStep = useSetAtom(stepAtom);
   const [store, setStore] = useAtom(storeAtom);
+  const [coordinates, setCoordinates] = useState<number[]>([0.0, 0.0])
 
   const {
     handleSubmit,
@@ -32,17 +37,31 @@ export default function AddLocation() {
     defaultValues: {
       phoneNumber: store.phoneNumber,
       location: store.location,
+      coordinates
     },
     resolver: zodResolver(FormDataSchema),
   });
 
   function handleFormData(data: any) {
-    setStore({
+    const processedData = {
       ...store,
+      coordinates,
       location: data.location,
       phoneNumber: data.phoneNumber,
-    });
-    console.log(data);
+      userId: user?.id ?? store.userId,
+    }
+    setStore(processedData as typeof store);
+    console.log(processedData);
+    console.log({store});
+
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/properties`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({property: processedData, userId: processedData.userId})
+    })
     setStep(5);
   }
 
@@ -71,10 +90,11 @@ export default function AddLocation() {
             tag="h3"
             className="mb-4 mt-8 text-lg font-medium md:!text-xl 2xl:!text-2xl"
           >
-            Where’s your apt. located?
+            Confirm the apartment's location
           </Text>
           <div className="relative">
             <Input
+              disabled
               type="text"
               size="xl"
               className="absolute left-4 right-4 top-4 z-10 h-10 leading-10 md:h-14 md:leading-[56px]"
@@ -86,7 +106,11 @@ export default function AddLocation() {
               {...register('location')}
             />
             <div className="overflow-hidden rounded-xl">
-              <MapView mapContainerClassName="w-full h-[230px] sm:h-[400px] xl:h-[600px]" />
+              <MapView 
+                address={store.location} 
+                mapContainerClassName="w-full h-[230px] sm:h-[400px] xl:h-[600px]" 
+                onSelectLocation={(e) => setCoordinates([e.latLng?.lat() ?? 0, e.latLng?.lng() ?? 0])}
+              />
             </div>
           </div>
         </div>

@@ -21,18 +21,18 @@ interface AvatarProps extends ReactAvatarProps {
 }
 
 const Avatar = ({ className, rounded = 'full', ...props }: AvatarProps) => {
-  return (
-    <ReactAvatar
-      className={clsx(
-        className,
-        classes.base,
-        classes.rounded[rounded],
-        props.onClick && 'cursor-pointer',
-      )}
-      {...props}
-    />
+  return (<></>
+    // <ReactAvatar
+    //   className={clsx(
+    //     className,
+    //     classes.base,
+    //     classes.rounded[rounded],
+    //     props.onClick && 'cursor-pointer',
+    //   )}
+    //   {...props}
+    // />
   );
 };
 
-// Avatar.displayName = 'Avatar';
+Avatar.displayName = 'Avatar';
 export default Avatar;

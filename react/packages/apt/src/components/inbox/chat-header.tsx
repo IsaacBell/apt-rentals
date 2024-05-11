@@ -18,7 +18,7 @@ export default function ChatHeader({ currentChat, onClick }: ChatHeaderProps) {
         <button onClick={onClick} className="mr-3 md:hidden">
           <ChevronLeftIcon className="h-auto w-4" />
         </button>
-        <Avatar src={currentChat.image} size="40" />
+        {/* <Avatar src={currentChat.image} size="40" /> */}
         <div>
           <Text className="overflow-ellipsis whitespace-nowrap text-sm font-normal text-gray md:text-base">
             {currentChat.name}

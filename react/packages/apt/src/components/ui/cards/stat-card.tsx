@@ -6,9 +6,9 @@ interface PricingCardTypes {
   data: {
     id: string;
     title: string;
-    order: number | null;
-    last: number;
-    price: number | null;
+    order: number | string | null;
+    last: number | string;
+    price: number | string | null;
   };
 }
 
