@@ -1,6 +1,6 @@
 'use client';
 
-import { VendorTypes } from '@/types';
+import { Property, VendorTypes } from '@/types';
 import { Menu } from '@headlessui/react';
 import { HeartIcon, EllipsisHorizontalIcon } from '@heroicons/react/24/outline';
 import { ShareIcon } from '@/components/icons/share-icon';
@@ -9,7 +9,8 @@ import Text from '@/components/ui/typography/text';
 import Button from '@/components/ui/button';
 
 interface ListingDetailsHeroBlockProps {
-  vendor: VendorTypes;
+  vendor?: VendorTypes;
+  property: Property | null;
 }
 
 // share icons
@@ -69,24 +70,24 @@ function ShareMenu() {
 }
 
 export default function ListingDetailsHeroBlock({
-  vendor,
+  property,
 }: ListingDetailsHeroBlockProps) {
   return (
     <div className="flex justify-between border-b border-gray-lighter pb-6 md:pb-8 2xl:pb-10">
       <div>
-        <p className="text-gray-dark">{vendor.location}</p>
+        <p className="text-gray-dark">{property?.address ?? ''}</p>
         <Text
           tag="h2"
           className="mt-2 !text-2xl uppercase !leading-7 md:!text-[26px] md:!leading-10 2xl:!text-[28px] 4xl:!text-3xl"
         >
-          {vendor.boatName}
+          {property?.title ?? ''}
         </Text>
         <div className="mt-3 flex items-center gap-2 leading-4 text-gray-dark md:mt-4">
-          <p>{vendor.boatGuests} guests</p>
+          <p>${property?.price ?? 0}/month</p>
           <span className="mt-1 block h-1.5 w-1.5 rounded-full bg-gray-dark"></span>
-          <p>{vendor.boatCabins} cabins</p>
+          <p>{property?.area ?? 0} sq ft.</p>
           <span className="mt-1 block h-1.5 w-1.5 rounded-full bg-gray-dark"></span>
-          <p>{vendor.boatBathrooms} bathrooms</p>
+          <p>{property?.rooms} rooms</p>
         </div>
       </div>
       <div className="relative">

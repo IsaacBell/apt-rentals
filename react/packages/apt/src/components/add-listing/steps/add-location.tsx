@@ -15,9 +15,10 @@ import useAuth from '@/hooks/use-auth';
 import { useState } from 'react';
 
 const FormDataSchema = z.object({
-  phoneNumber: z.string().min(7, { message: 'Minimum 7 digits!' }),
+  address: z.string().optional(),
   location: z.string().optional(),
   coordinates: z.array(z.number()),
+  phoneNumber: z.string().min(7, { message: 'Minimum 7 digits!' }),
 });
 
 type FormDataType = z.infer<typeof FormDataSchema>;
@@ -37,12 +38,14 @@ export default function AddLocation() {
     defaultValues: {
       phoneNumber: store.phoneNumber,
       location: store.location,
+      address: store.location,
       coordinates
     },
     resolver: zodResolver(FormDataSchema),
   });
 
   function handleFormData(data: any) {
+    console.log({data})
     const processedData = {
       ...store,
       coordinates,
@@ -53,7 +56,7 @@ export default function AddLocation() {
     }
     setStore(processedData as typeof store);
     console.log({processedData});
-    console.log({store});
+    // console.log({store});
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`, {
       method: 'POST',

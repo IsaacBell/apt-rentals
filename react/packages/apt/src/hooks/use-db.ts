@@ -53,8 +53,22 @@ export function useDB() {
     return (await res).status === 200;
   }
 
+  const getProperty = async (id: string): Promise<Property> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${id}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
   
-  
+    if (!res.ok) {
+      throw new Error('Failed to fetch properties');
+    }
+
+    return await res.json();
+  };
+
   const getProperties = async (userId: string): Promise<Property[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?user_id=${userId}`, {
       method: 'GET',
@@ -84,6 +98,19 @@ export function useDB() {
     return (await res).status === 200;
   }
 
+  const deleteProperty = async (id: string): Promise<boolean> => {
+    const res = fetch(`${process.env.NEXT_PUBLIC_API_URL}/properties/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ id })
+    })
+
+    return (await res).status === 200;
+  }
+
   const getUserStats = async (userId: string): Promise<Property[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/realtor/stats?user_id=${userId}`, {
       method: 'GET',
@@ -102,12 +129,14 @@ export function useDB() {
 
   return {
     initSupabase,
+    getProperty,
     getProperties,
     getUser,
     getUserStats,
     getRealtor,
     saveUser,
     saveProperty,
+    deleteProperty,
     supabase,
   };
 }

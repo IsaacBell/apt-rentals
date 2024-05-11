@@ -1,7 +1,7 @@
 'use client';
 
 import { dashboardCardData } from 'public/data/dashboard';
-import TransactionActivity from '@/components/dashboard/transaction-activity';
+import Activity from '@/components/dashboard/activity';
 import DashboardHero from '@/components/dashboard/dashboard-hero';
 import StatCard from '@/components/ui/cards/stat-card';
 import { useEffect, useState } from 'react';
@@ -19,13 +19,11 @@ export default function DashboardPage() {
     data[0].order = stats?.total_properties
     data[1].price = stats?.average_price
     data[2].price = stats?.total_price
-    if (statsFetched) console.log({data})
 
     return data;
   }
 
   useEffect(() => {
-    console.log('here')
     if (statsFetched || !user) return;
 
     getUserStats(user?.id).then((stats) => {
@@ -42,8 +40,9 @@ export default function DashboardPage() {
           <StatCard key={`pricing-card-${index}`} data={item} />
         ))}
       </div>
+
       <div>
-        <TransactionActivity />
+        <Activity />
       </div>
     </div>
   );

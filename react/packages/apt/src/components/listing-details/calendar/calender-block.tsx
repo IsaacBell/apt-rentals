@@ -3,7 +3,11 @@
 import Calendar from '@/components/listing-details/calendar/calendar';
 import Section from '@/components/ui/section';
 
-export default function CalenderBlock() {
+interface CalendarProps {
+  address: string;
+}
+
+export default function CalenderBlock({address}: CalendarProps) {
   const dates = {
     checkin: new Date(),
     checkout: new Date(new Date().setDate(new Date().getDate() + 12)),
@@ -14,7 +18,7 @@ export default function CalenderBlock() {
       className="py-5 xl:py-7"
       title="Availability"
       titleClassName="text-xl md:!text-[22px] 2xl:!text-2xl mb-2"
-      description="Santa Maria Maggiore, Milazzo"
+      description={address}
       descriptionClassName="!text-gray !text-base"
     >
       <ul className="pt-4 md:pt-6">

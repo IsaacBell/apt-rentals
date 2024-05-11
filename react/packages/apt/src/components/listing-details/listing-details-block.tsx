@@ -14,29 +14,34 @@ import VendorBlock from '@/components/listing-details/vendor-block';
 import ChatBlock from '@/components/listing-details/chat-block';
 import { useModal } from '@/components/modals/context';
 import Button from '@/components/ui/button';
+import { Property } from '@/types';
 
-export default function ListingDetails() {
+interface ListingProps {
+  property: Property | null;
+}
+
+export default function ListingDetails({ property }: ListingProps) {
   const { openModal } = useModal();
-  const property = { address: '' }
+  console.log('property addr', property)
 
   return (
     <>
       <div className="flex justify-between gap-5 lg:gap-8 xl:gap-12 4xl:gap-16">
         <div className="w-full">
-          <ListingDetailsHeroBlock vendor={vendorData.vendor} />
-          <DescriptionBlock description={vendorData.description} />
-          <EquipmentBlock equipment={vendorData.equipment} />
-          <SpecificationBlock specifications={vendorData.specifications} />
-          <VendorBlock stats={reviewsData.stats} vendor={vendorData.vendor} />
-          <LocationBlock address={property.address} />
-          <CalenderBlock />
+          <ListingDetailsHeroBlock property={property} />
+          <DescriptionBlock description={property?.description ?? ''} />
+          {/* <EquipmentBlock equipment={vendorData.equipment} /> */}
+          {/* <SpecificationBlock specifications={vendorData.specifications} /> */}
+          {/* <VendorBlock stats={reviewsData.stats} vendor={vendorData.vendor} /> */}
+          <LocationBlock address={property?.address ?? ''} />
+          <CalenderBlock address={property?.address ?? ''} />
           <ReviewBlock reviewsData={reviewsData} />
           <ChatBlock />
         </div>
         <div className="hidden w-full max-w-sm pb-11 lg:block xl:max-w-md 3xl:max-w-lg">
           <div className="sticky top-32 4xl:top-40">
             <BookingForm
-              price={vendorData.price}
+              price={property?.price ?? 0}
               averageRating={reviewsData.stats.averageRating}
               totalReviews={reviewsData.stats.totalReview}
             />

@@ -128,7 +128,7 @@ module Api
     def property_params
       params.require(:property).permit(
         :user_id, :area, :description, :title, :preview_image, :rooms, :price, :sold, :location,
-        :deleted, :created_at, :updated_at, :phone_number, :user,
+        :deleted, :created_at, :updated_at, :phone_number, :user, :address,
         coordinates: [], images: %i[id img]
       )
     end

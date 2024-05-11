@@ -102,7 +102,7 @@ export default function BookingForm({
     >
       <div className="flex items-center justify-between gap-3  ">
         <p className="text-xl font-bold text-gray-dark xl:text-[22px]">
-          ${price} <span className="text-base">/ night</span>
+          ${price} <span className="text-base">/ month</span>
         </p>
         <p className="inline-flex flex-shrink-0 items-center gap-2">
           <Staricon className="xl:w-h-5 h-4 w-4 xl:h-5" />

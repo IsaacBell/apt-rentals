@@ -2,33 +2,32 @@
 
 import { reservationData } from 'public/data/orders';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { reservationColumn } from '@/components/reservation/reservation-col';
 import Input from '@/components/ui/form-fields/input';
 import Pagination from '@/components/ui/pagination';
 import Text from '@/components/ui/typography/text';
 import Table from '@/components/ui/table';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { useDB } from '@/hooks/use-db';
-import useAuth from '@/hooks/use-auth';
 import { Property } from '@/types';
+import useAuth from '@/hooks/use-auth';
+import { useDB } from '@/hooks/use-db';
+import { useRouter } from 'next/navigation';
+import { Routes } from '@/config/routes';
 
-export default function LIstingPage() {
-  const { getProperties } = useDB();
+export default function Activity() {
+  const router = useRouter();
+  const { getProperties, deleteProperty } = useDB();
   const { user } = useAuth();
 
   const [order, setOrder] = useState<string>('desc');
   const [column, setColumn] = useState<string>('');
-  const [data, setData] = useState<typeof reservationData>([]);
-  const [searchfilter, setSearchFilter] = useState('');
-  const [current, setCurrent] = useState(1);
   const [properties, setProperties] = useState<Property[]>([]);
   const [propertiesFetched, setPropertiesFetched] = useState<boolean>(false);
-
+  const [searchfilter, setSearchFilter] = useState('');
+  const [current, setCurrent] = useState(1);
   const pageSize = 10;
-  console.log({properties})
 
   useEffect(() => {
-    console.log('here')
     if (!propertiesFetched && !!user)
       getProperties(user.id).then(propts => {
         setProperties(propts);
@@ -51,45 +50,19 @@ export default function LIstingPage() {
     return filteredData.slice(start, end);
   }, [current, filteredData]);
 
-
-  // single select checkbox function
-  const onChange = useCallback(
-    (row: any) => {
-      let fArr = [...properties];
-      let cArr: any = [];
-      fArr.forEach((item) => {
-        // if (item.id === row.id) item.checked = !item.checked;
-        cArr.push(item);
-      });
-      setProperties(cArr);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },
-    [data],
-  );
-
-  // handle more button with edit, preview, delete
   const onMore = useCallback((e: any, row: any) => {
-    console.log(e.target.id);
+    console.log('View', e.target.id);
+    router.push(Routes.public.listingDetails(row.id ?? e.target.id));
   }, []);
-
-  // on header click sort table by ascending or descending order
-  const onHeaderClick = useCallback(
-    (value: string) => ({
-      onClick: () => {
-        setColumn(value);
-        setOrder(order === 'desc' ? 'asc' : 'desc');
-        if (order === 'desc') {
-          //@ts-ignore
-          setProperties([...data.sort((a, b) => (a[value] > b[value] ? -1 : 1))]);
-        } else {
-          //@ts-ignore
-          setProperties([...data.sort((a, b) => (a[value] > b[value] ? 1 : -1))]);
-        }
-      },
-    }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data],
-  );
+  const onEdit = useCallback((e: any, row: any) => {
+    console.log('Edit', e.target.id);
+    router.push(Routes.public.listingDetails(row.id ?? e.target.id))
+  }, []);
+  const onDelete = useCallback((e: any, row: any) => {
+    console.log(e.target.id);
+    deleteProperty(row);
+    setProperties(properties.filter(p => p.id === row.id));
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -97,41 +70,65 @@ export default function LIstingPage() {
         title: 'Title',
         dataIndex: 'title',
         key: 'title',
-        onHeaderCell: () => onHeaderClick('title'),
       },
       {
         title: 'Address',
         dataIndex: 'address',
         key: 'address',
-        onHeaderCell: () => onHeaderClick('address'),
       },
       {
         title: 'Area',
         dataIndex: 'area',
         key: 'area',
-        onHeaderCell: () => onHeaderClick('area'),
       },
       {
         title: 'Price',
         dataIndex: 'price',
         key: 'price',
-        onHeaderCell: () => onHeaderClick('price'),
       },
       {
         title: 'Rooms',
         dataIndex: 'rooms',
         key: 'rooms',
-        onHeaderCell: () => onHeaderClick('rooms'),
+      },
+      {
+        title: 'Actions',
+        key: 'actions',
+        render: (record: Property) => (
+          <div className="flex items-center space-x-4">
+            <button
+              id="view"
+              className="text-blue-500 hover:text-blue-600"
+              onClick={(e) => onMore(e, record)}
+            >
+              View
+            </button>
+            <button
+              id="edit"
+              className="text-green-500 hover:text-green-600"
+              onClick={(e) => onEdit(e, record)}
+            >
+              Edit
+            </button>
+            <button
+              id="delete"
+              className="text-red-500 hover:text-red-600"
+              onClick={(e) => onDelete(e, record)}
+            >
+              Delete
+            </button>
+          </div>
+        ),
       },
     ],
-    [onHeaderClick]
+    [onMore]
   );
 
-  const Listings = (
-    <div className="container-fluid mb-12 lg:mb-16">
-      <div className="mb-6 mt-8 grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr_262px] md:mt-10 md:gap-5 lg:mt-12 xl:mt-16 xl:gap-10">
+  return (
+    <>
+      <div className="mb-4 grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr_262px] md:gap-5 xl:gap-10">
         <Text tag="h4" className="text-xl">
-          Your Listings
+          Transaction Activity
         </Text>
         <Input
           type="text"
@@ -156,6 +153,7 @@ export default function LIstingPage() {
           pageSize={10}
           nextIcon="Next"
           prevIcon="Previous"
+          variant="solid"
           prevIconClassName="!text-gray-dark"
           nextIconClassName="!text-gray-dark"
           onChange={(page) => {
@@ -163,8 +161,6 @@ export default function LIstingPage() {
           }}
         />
       </div>
-    </div>
+    </>
   );
-
-  return Listings
 }
