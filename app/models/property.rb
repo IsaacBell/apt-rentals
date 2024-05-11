@@ -4,30 +4,31 @@ class Property < ApplicationRecord
 
   paginates_per 50
 
-  has_one_attached :preview_image
   belongs_to :user
+  has_one_attached :preview_image, dependent: :destroy
 
   validate :has_acceptable_image?
 
-  scope :active, ->() {where(deleted: false, sold: false)}
-  scope :active_listings, ->() {active.order(:created_at)}
-  scope :within, -> (latitude, longitude, distance_in_mile = 50) do
+  scope :active, -> { where(deleted: false, sold: false) }
+  scope :active_listings, -> { active.order(:created_at) }
+  scope :within, lambda { |latitude, longitude, distance_in_mile = 50|
     return where('1 = 1') if latitude.blank? || longitude.blank?
 
     distance_in_meter = distance_in_mile.to_f * 1609.34 # approx
-    where(%{
+    where(format(%{
       ST_Distance(location, 'POINT(%f %f)') < %f
-    } % [longitude, latitude, distance_in_meter])
-  end
-  scope :with_filters, ->(filters) do
+    }, longitude, latitude, distance_in_meter))
+  }
+  scope :with_filters, lambda { |filters|
     out = active
+    out = out.where('user_id = ?', filters[:user_id]) if filters[:user_id]
     out = out.where('sold = ?', filters[:sold]) if filters[:sold]
     out = out.where('area >= ? AND area <= ?', filters[:area]) if filters[:area]
     out = out.where('rooms = ?', filters[:rooms]) if filters[:rooms]
     out = out.where('price >= ?', filters[:price]) if filters[:price] && filters[:price_gte]
     out = out.where('price <= ?', filters[:price]) if filters[:price] && filters[:price_gte]
     out
-  end
+  }
 
   def delete
     update_column('deleted', true)
@@ -38,13 +39,11 @@ class Property < ApplicationRecord
   def has_acceptable_image?
     return unless preview_image.attached?
 
-    unless preview_image.blob.byte_size <= 5.megabyte
-      errors.add(:preview_image, 'is too big')
-    end
+    errors.add(:preview_image, 'is too big') unless preview_image.blob.byte_size <= 5.megabyte
 
     acceptable_types = ['image/jpg', 'image/jpeg', 'image/png']
-    unless acceptable_types.include?(preview_image.content_type)
-      errors.add(:preview_image, 'must be a JPEG or PNG')
-    end
+    return if acceptable_types.include?(preview_image.content_type)
+
+    errors.add(:preview_image, 'must be a JPEG or PNG')
   end
 end

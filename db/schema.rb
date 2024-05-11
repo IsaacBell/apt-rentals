@@ -51,6 +51,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_07_063301) do
 
   create_table "properties", force: :cascade do |t|
     t.string "title", null: false
+    t.string "address"
     t.string "description"
     t.integer "area"
     t.integer "rooms", default: 0, null: false
@@ -68,7 +69,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_07_063301) do
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email"
-    t.string "phone"
+    t.string "phone_number"
     t.string "password_hash"
     t.string "confirmation_token"
     t.datetime "confirmed_at", precision: nil

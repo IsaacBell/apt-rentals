@@ -9,7 +9,7 @@ class CreateUsers < ActiveRecord::Migration[7.0]
 
     create_table :users, id: :uuid do |t|
       t.string :email, unique: true
-      t.string :phone
+      t.string :phone_number
       t.string :password_hash
       t.string :confirmation_token
       t.timestamp :confirmed_at

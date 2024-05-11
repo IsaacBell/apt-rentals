@@ -65,7 +65,7 @@ module Cachable
       with_cache_retrieval(id) { super(id) }
     end
 
-    def create(**attrs)
+    def create(attrs)
       out = super(attrs)
       cache_if_id_present(out)
       out

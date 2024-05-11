@@ -83,7 +83,7 @@ export default function useAuth() {
     return session?.user as UserType;
   };
 
-  const register = async (userData: SignUpType): Promise<UserType | null> => {
+  const register = async (userData: SignUpType, isRealtor: boolean): Promise<UserType | null> => {
     if (!supabase) {
       console.error('Supabase client not available for sign in');
       return null;
@@ -97,7 +97,7 @@ export default function useAuth() {
           data: {
             first_name: userData.firstName,
             last_name: userData.lastName,
-            userType: userData.userType ?? 'user',
+            userType: isRealtor ? 'realtor' : 'user',
           }
         }
       }

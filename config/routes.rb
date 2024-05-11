@@ -7,6 +7,9 @@ Rails.application.routes.draw do
     # mount_devise_token_auth_for 'User', at: 'auth'
     resources :users
     resources :properties
+    get '/properties', to: 'properties#list_for_realtor'
+    get '/realtor/stats', to: 'properties#realtor_stats'
+
     resources :users do
       resources :properties
     end

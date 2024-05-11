@@ -3,7 +3,7 @@ export const dashboardCardData = [
       id: 'cardone',
       title: 'Total Listings',
       order: 1234,
-      last: 5678,
+      last: 0,
       price: null,
     },
     {

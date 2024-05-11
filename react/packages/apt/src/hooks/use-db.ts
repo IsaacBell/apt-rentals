@@ -1,4 +1,4 @@
-import { UserType } from '@/types';
+import { Property, UserType } from '@/types';
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
@@ -53,11 +53,61 @@ export function useDB() {
     return (await res).status === 200;
   }
 
+  
+  
+  const getProperties = async (userId: string): Promise<Property[]> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?user_id=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+  
+    if (!res.ok) {
+      throw new Error('Failed to fetch properties');
+    }
+  
+    return await res.json();
+  };
+
+  const saveProperty = async (pty: Property): Promise<boolean> => {
+    const res = fetch(`${process.env.NEXT_PUBLIC_API_URL}/properties`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ pty })
+    })
+
+    return (await res).status === 200;
+  }
+
+  const getUserStats = async (userId: string): Promise<Property[]> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/realtor/stats?user_id=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+  
+    if (!res.ok) {
+      throw new Error('Failed to fetch properties');
+    }
+  
+    return await res.json();
+  };
+
   return {
     initSupabase,
+    getProperties,
     getUser,
+    getUserStats,
     getRealtor,
     saveUser,
+    saveProperty,
     supabase,
   };
 }

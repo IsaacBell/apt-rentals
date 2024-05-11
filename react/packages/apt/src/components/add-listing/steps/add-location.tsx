@@ -23,7 +23,7 @@ const FormDataSchema = z.object({
 type FormDataType = z.infer<typeof FormDataSchema>;
 
 export default function AddLocation() {
-  const { user } = useAuth();
+  const { user, isRealtor } = useAuth();
   const setStep = useSetAtom(stepAtom);
   const [store, setStore] = useAtom(storeAtom);
   const [coordinates, setCoordinates] = useState<number[]>([0.0, 0.0])
@@ -46,23 +46,31 @@ export default function AddLocation() {
     const processedData = {
       ...store,
       coordinates,
+      address: data.location,
       location: data.location,
       phoneNumber: data.phoneNumber,
       userId: user?.id ?? store.userId,
     }
     setStore(processedData as typeof store);
-    console.log(processedData);
+    console.log({processedData});
     console.log({store});
 
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/properties`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({property: processedData, userId: processedData.userId})
+      body: JSON.stringify({
+        property: processedData, 
+        userId: processedData.userId, 
+        user: {...user, userType: isRealtor ? 'realtor' : 'user'}
+      })
+    }).then((res) => {
+      if (res.ok)
+        setStep(5);
     })
-    setStep(5);
+
   }
 
   return (

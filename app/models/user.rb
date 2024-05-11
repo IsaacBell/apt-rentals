@@ -3,15 +3,15 @@
 class User < ApplicationRecord
   include Cachable
   include Serializable
-  
+
   USER_TYPES = {realtor: 'realtor', admin: 'admin', user: 'user'}.freeze
 
   def self.all_user_types
     USER_TYPES.map { |key, val| val }
   end
-  
+
   paginates_per 50
-  
+
   set_cache_expiry 6.hours
 
 
@@ -47,12 +47,40 @@ class User < ApplicationRecord
     active.where(email:).first
   end
 
+  def self.insert_from_firebase(user_params)
+    attrs = user_params.except(
+      :aud, :role, :email_confirmed_at, :phone, :identities,
+      :is_anonymous, :app_metadata, :user_metadata, :user_id
+    )
+    attrs[:phone_number] = user_params[:phone]
+    # attrs[:first_name] = user_params[:first_name]
+    # attrs[:last_name] = user_params[:last_name]
+
+    create(attrs)
+  end
+
   def can_manage_property?(property)
     property.in?(properties)
   end
 
   def has_properties?
     properties.any?
+  end
+
+  def realtor_stats
+    return {} unless realtor?
+
+    stats = properties.select("
+      COUNT(*) AS total_properties,
+      AVG(price) AS average_price,
+      SUM(price) AS total_price
+    ").take
+
+    {
+      total_properties: stats.total_properties,
+      average_price: stats.average_price,
+      total_price: stats.total_price
+    }
   end
 
   private

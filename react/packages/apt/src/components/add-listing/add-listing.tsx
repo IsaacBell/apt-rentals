@@ -42,6 +42,7 @@ export const storeAtom = atomWithStorage('addNewProperty', {
   images: [],
   coordinates: [0.0,0.0],
   phoneNumber: '',
+  address: '',
 });
 
 export default function AddListing() {

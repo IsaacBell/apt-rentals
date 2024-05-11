@@ -34,7 +34,7 @@ export default function SignUpForm() {
     
     console.log('Submitted data', data);
     
-    supabaseRegisterUser(data);
+    supabaseRegisterUser(data, isRealtor);
     router.push(Routes.auth.signIn);
   }
 

@@ -1,6 +1,24 @@
 import { z } from 'zod';
 import { User } from "@supabase/supabase-js";
 
+export interface Property {
+  id: string;
+  title: string;
+  description: string;
+  area: number;
+  rooms: number;
+  price: number;
+  sold: boolean;
+  deleted: boolean;
+  location: {
+    type: 'Point';
+    coordinates: [number, number];
+  };
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface UserType extends User {
   role?: string;
   name?: string;

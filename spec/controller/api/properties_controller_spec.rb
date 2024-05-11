@@ -16,11 +16,11 @@ RSpec.describe Api::PropertiesController, type: :controller do
       expect(JSON.parse(response.body).size).to eq(3)
     end
 
-    it 'returns properties within the specified radius' do
+    it 'returns properties within the specified distance' do
       nearby_property = create(:property, location: 'POINT(-122.4194 37.7749)')
       distant_property = create(:property, location: 'POINT(-73.9857 40.7484)')
 
-      get :index, params: { lat: 37.7749, lng: -122.4194, radius: 1 }
+      get :index, params: { lat: 37.7749, lng: -122.4194, distance: 1 }
       expect(JSON.parse(response.body)).to include(nearby_property.as_json(root: false))
       expect(JSON.parse(response.body)).not_to include(distant_property)
     end

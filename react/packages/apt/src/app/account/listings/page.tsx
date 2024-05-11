@@ -8,73 +8,60 @@ import Pagination from '@/components/ui/pagination';
 import Text from '@/components/ui/typography/text';
 import Table from '@/components/ui/table';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { useDB } from '@/hooks/use-db';
+import useAuth from '@/hooks/use-auth';
+import { Property } from '@/types';
 
 export default function LIstingPage() {
+  const { getProperties } = useDB();
+  const { user } = useAuth();
+
   const [order, setOrder] = useState<string>('desc');
   const [column, setColumn] = useState<string>('');
   const [data, setData] = useState<typeof reservationData>([]);
   const [searchfilter, setSearchFilter] = useState('');
   const [current, setCurrent] = useState(1);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [propertiesFetched, setPropertiesFetched] = useState<boolean>(false);
 
-  // filter data in table
+  const pageSize = 10;
+  console.log({properties})
+
   useEffect(() => {
-    let fArr = [...data];
+    console.log('here')
+    if (!propertiesFetched && !!user)
+      getProperties(user.id).then(propts => {
+        setProperties(propts);
+        setPropertiesFetched(true);
+      })
+  }, [user, getProperties, setProperties, propertiesFetched, setPropertiesFetched]);
+
+  const filteredData = useMemo(() => {
     if (searchfilter) {
-      setData(
-        fArr.filter((item) =>
-          item.customer.name.toLowerCase().includes(searchfilter.toLowerCase()),
-        ),
+      return properties.filter((item) =>
+        item.title.toLowerCase().includes(searchfilter.toLowerCase())
       );
-    } else {
-      let start = (current - 1) * 10;
-      let offset = current * 10;
-      const getData = () => reservationData?.slice(start, offset);
-      setData(getData());
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchfilter]);
+    return properties;
+  }, [properties, searchfilter]);
 
-  // table current change
-  useEffect(() => {
-    let start = (current - 1) * 10;
-    let offset = current * 10;
-    const getData = () => reservationData?.slice(start, offset);
-    setData(getData());
-  }, [current]);
+  const paginatedData = useMemo(() => {
+    const start = (current - 1) * pageSize;
+    const end = start + pageSize;
+    return filteredData.slice(start, end);
+  }, [current, filteredData]);
 
-  // select all checkbox function
-  const onSelectAll = useCallback(
-    (checked: boolean) => {
-      let fArr = [...data];
-      let cArr: any = [];
-      if (checked) {
-        fArr.forEach((item) => {
-          item.checked = true;
-          cArr.push(item);
-        });
-        setData(cArr);
-      } else {
-        fArr.forEach((item) => {
-          item.checked = false;
-          cArr.push(item);
-        });
-        setData(fArr);
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },
-    [data],
-  );
 
   // single select checkbox function
   const onChange = useCallback(
     (row: any) => {
-      let fArr = [...data];
+      let fArr = [...properties];
       let cArr: any = [];
       fArr.forEach((item) => {
-        if (item.id === row.id) item.checked = !item.checked;
+        // if (item.id === row.id) item.checked = !item.checked;
         cArr.push(item);
       });
-      setData(cArr);
+      setProperties(cArr);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     },
     [data],
@@ -93,10 +80,10 @@ export default function LIstingPage() {
         setOrder(order === 'desc' ? 'asc' : 'desc');
         if (order === 'desc') {
           //@ts-ignore
-          setData([...data.sort((a, b) => (a[value] > b[value] ? -1 : 1))]);
+          setProperties([...data.sort((a, b) => (a[value] > b[value] ? -1 : 1))]);
         } else {
           //@ts-ignore
-          setData([...data.sort((a, b) => (a[value] > b[value] ? 1 : -1))]);
+          setProperties([...data.sort((a, b) => (a[value] > b[value] ? 1 : -1))]);
         }
       },
     }),
@@ -104,18 +91,40 @@ export default function LIstingPage() {
     [data],
   );
 
-  // gets the columns of table
-  const columns: any = useMemo(
-    () =>
-      reservationColumn(
-        order,
-        column,
-        onSelectAll,
-        onChange,
-        onMore,
-        onHeaderClick,
-      ),
-    [order, column, onSelectAll, onChange, onMore, onHeaderClick],
+  const columns = useMemo(
+    () => [
+      {
+        title: 'Title',
+        dataIndex: 'title',
+        key: 'title',
+        onHeaderCell: () => onHeaderClick('title'),
+      },
+      {
+        title: 'Address',
+        dataIndex: 'address',
+        key: 'address',
+        onHeaderCell: () => onHeaderClick('address'),
+      },
+      {
+        title: 'Area',
+        dataIndex: 'area',
+        key: 'area',
+        onHeaderCell: () => onHeaderClick('area'),
+      },
+      {
+        title: 'Price',
+        dataIndex: 'price',
+        key: 'price',
+        onHeaderCell: () => onHeaderClick('price'),
+      },
+      {
+        title: 'Rooms',
+        dataIndex: 'rooms',
+        key: 'rooms',
+        onHeaderCell: () => onHeaderClick('rooms'),
+      },
+    ],
+    [onHeaderClick]
   );
 
   return (
@@ -135,7 +144,7 @@ export default function LIstingPage() {
         />
       </div>
       <Table
-        data={data}
+        data={paginatedData}
         columns={columns}
         variant="minimal"
         className="text-sm"
@@ -143,7 +152,7 @@ export default function LIstingPage() {
       <div className="mt-8 text-center">
         <Pagination
           current={current}
-          total={reservationData.length}
+          total={paginatedData.length}
           pageSize={10}
           nextIcon="Next"
           prevIcon="Previous"
