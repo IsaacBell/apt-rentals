@@ -65,7 +65,7 @@ class User < ApplicationRecord
   end
 
   def realtor_stats
-    stats = properties.select("
+    stats = properties.active.select("
       COUNT(*) AS total_properties,
       AVG(price) AS average_price,
       SUM(price) AS total_price

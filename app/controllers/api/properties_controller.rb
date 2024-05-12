@@ -14,7 +14,7 @@ module Api
 
     def index
       get_user = user(exclude_property_params: true)
-      render json: get_user ? get_user.properties : properties
+      render json: get_user ? get_user.properties.active : properties.active
     end
 
     def create
