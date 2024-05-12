@@ -1,9 +1,9 @@
 {
   "name": "tripfinder",
-  "description": "react next template",
+  "description": "react next app",
   "version": "5.2.2",
   "private": true,
-  "author": "RedQ, Inc",
+  "author": "TopTal, Inc",
   "workspaces": [
     "packages/*"
   ],

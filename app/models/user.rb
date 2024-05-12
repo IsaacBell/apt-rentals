@@ -4,16 +4,15 @@ class User < ApplicationRecord
   include Cachable
   include Serializable
 
-  USER_TYPES = {realtor: 'realtor', admin: 'admin', user: 'user'}.freeze
+  USER_TYPES = { realtor: 'realtor', admin: 'admin', user: 'user' }.freeze
 
   def self.all_user_types
-    USER_TYPES.map { |key, val| val }
+    USER_TYPES.map { |_key, val| val }
   end
 
   paginates_per 50
 
   set_cache_expiry 6.hours
-
 
   # devise :database_authenticatable, :registerable,
   #        :recoverable, :rememberable, :trackable, :validatable
@@ -25,26 +24,24 @@ class User < ApplicationRecord
   scope :deleted, -> { where(deleted: true) }
 
   validates :email, presence: true, uniqueness: true
-  validates :user_type, inclusion: { in: self.all_user_types }
+  validates :user_type, inclusion: { in: all_user_types }
   validate :ensure_non_realtor_user_has_no_properties
 
-  self.all_user_types.each do |user_type|
+  all_user_types.each do |user_type|
     user_type = user_type.to_s.demodulize.parameterize
-    scope :"#{user_type.pluralize}", -> { where(user_type:) }
-    scope :"active_#{user_type.pluralize}", -> { active.where(user_type:) }
-    scope :"deleted_#{user_type.pluralize}", -> { deleted.where(user_type:) }
+    scope :"#{user_type.pluralize}", -> { where(user_type: user_type) }
+    scope :"active_#{user_type.pluralize}", -> { active.where(user_type: user_type) }
+    scope :"deleted_#{user_type.pluralize}", -> { deleted.where(user_type: user_type) }
 
-    define_method("#{user_type}?") do
-      self.user_type == user_type
-    end
+    define_method("#{user_type}?") { self.user_type == user_type }
   end
 
   def self.find(id)
-    active.where(id:).first
+    active.where(id: id).first
   end
 
   def self.find_by_email(email)
-    active.where(email:).first
+    active.where(email: email).first
   end
 
   def self.insert_from_firebase(user_params)

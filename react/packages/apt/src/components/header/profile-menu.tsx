@@ -20,11 +20,11 @@ const menu = {
   top: [
     {
       path: Routes.public.inbox,
-      text: 'Message',
+      text: 'Messages',
     },
     {
       path: Routes.public.trips,
-      text: 'Trips',
+      text: 'Ongoing Rentals',
     },
     {
       path: Routes.public.wishlist,

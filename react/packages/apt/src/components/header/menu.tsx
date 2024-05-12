@@ -29,7 +29,7 @@ const menuItems = [
   },
   {
     id: 5,
-    label: 'Other Pages',
+    label: 'Get Started',
     path: '',
     dropdownItems: [
       // {
@@ -54,7 +54,7 @@ const menuItems = [
       },
       {
         id: 6,
-        label: 'Forgot Password',
+        label: 'Forgot Password?',
         path: Routes.auth.forgotPassword,
       },
       {

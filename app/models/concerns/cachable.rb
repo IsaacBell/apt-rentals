@@ -31,10 +31,6 @@ module Cachable
       succeeded
     end
 
-    alias_method :destroy, :delete
-
-    private
-
     def cache_if_id_present(object)
       return unless object.id.present?
 
@@ -42,6 +38,10 @@ module Cachable
     rescue StandardError => e
       Bugsnag.notify("Redis Error: #{e.message}")
     end
+
+    alias_method :destroy, :delete
+
+    private
 
     def clear_from_cache
       Rails.cache.redis.del(cache_key)
