@@ -1,7 +1,6 @@
 'use client'
 
 import { vendorData } from 'public/data/listing-details';
-import RelatedListingBlock from '@/components/listing-details/related-listings/related-listings-block';
 import ListingDetails from '@/components/listing-details/listing-details-block';
 import SubscriptionBlock from '@/components/subscription/subscription-block';
 import GallaryBlock from '@/components/listing-details/gallary-block';

@@ -63,11 +63,10 @@ If it's not installed in your system then please install them by checking offici
 2. https://yarnpkg.com/lang/en/docs/install/
 
 ```shell
-git clone https://github.com/IsaacBell/rails-react-starter-q3-23.git
-cd rails-react-starter-q3-23
+# in workspace root folder
 bundle
-yarn
 rails db:setup db:migrate
+cd react/packages && yarn
 ```
 
 ### Testing
@@ -78,7 +77,18 @@ $ bundle exec rspec spec/
 
 ### Usage
 
+To run the API:
+```shell
+rails s -p 3005
+```
+
+To run the web client:
+
+```shell
+cd react/packages && yarn start:apt
+```
+
 Concurrently run an instance of the API service and web client:
 ```shell
-./bin/dev
+bash start-server.sh
 ```

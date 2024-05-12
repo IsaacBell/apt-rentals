@@ -15,7 +15,7 @@ const CreateListing = dynamic(
 const PropertyInfo = dynamic(
   () => import('@/components/add-listing/steps/property-info'),
 );
-const AddBoatPhotos = dynamic(
+const AddPhotos = dynamic(
   () => import('@/components/add-listing/steps/upload-photos'),
 );
 const AddLocation = dynamic(
@@ -68,7 +68,7 @@ export default function AddListing() {
       stepComponent = <PropertyInfo />;
       break;
     case 3:
-      stepComponent = <AddBoatPhotos />;
+      stepComponent = <AddPhotos />;
       break;
     case 4:
       stepComponent = <AddLocation />;

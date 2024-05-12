@@ -9,7 +9,6 @@ import FreeCancellation from '@/components/explore/free-cancellation-filter';
 import AptTypeFilter from '@/components/explore/apt-type-filter';
 import SoldFilter from '@/components/explore/sold-filter';
 import TripdateFilter from '@/components/explore/tripdate-filter';
-import CategoryFilter from '@/components/explore/category-filter';
 import DistanceFilter from '@/components/explore/distance-filter';
 import PriceFilter from '@/components/explore/price-filter';
 import RoomFilter from '@/components/explore/room-filter';

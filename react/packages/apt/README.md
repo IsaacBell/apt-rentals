@@ -19,10 +19,6 @@ Tech specification for this template is given below
 - [TypeScript](https://www.typescriptlang.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 
-## Getting Started & Installation
-
-For getting started with the template you have to follow the below procedure. First navigate to the `boat` directory.
-
 ### Step 1 : Configure your env file
 
 Within the project directory you'll find a `.env.example` file. Ask a dev for a `.env.local` file.
