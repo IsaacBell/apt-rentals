@@ -16,6 +16,8 @@ import { useModal } from '@/components/modals/context';
 import Button from '@/components/ui/button';
 import { Property } from '@/types';
 import { useState } from 'react';
+import { useDB } from '@/hooks/use-db';
+import { useEffectOnce } from 'react-use';
 
 interface ListingProps {
   property: Property | null;
@@ -23,7 +25,22 @@ interface ListingProps {
 
 export default function ListingDetails({ property }: ListingProps) {
   const { openModal } = useModal();
+  const { updateProperty } = useDB();
   const [editMode, setEditMode] = useState<boolean>(false);
+  const [editedProperty, setEditedProperty] = useState<Property | null>(property);
+
+  useEffectOnce(() => {
+    if (!editedProperty && property) setEditedProperty(property);
+  })
+
+  const handleSave = async () => {
+    if (editedProperty) {
+      const success = await updateProperty(editedProperty);
+      if (success) {
+        setEditMode(false);
+      }
+    }
+  };
 
   return (
     <>
@@ -33,14 +50,26 @@ export default function ListingDetails({ property }: ListingProps) {
             onEdit={() => setEditMode(!editMode)} 
             onCancelEdit={() => setEditMode(false)}
             editMode={editMode} 
-            property={property} 
+            property={editedProperty ?? property} 
+            onPropertyChange={(updatedProperty) => setEditedProperty(updatedProperty)}
+            // editedProperty={editedProperty}
           />
-          <DescriptionBlock description={property?.description ?? ''} />
-          {/* <EquipmentBlock equipment={vendorData.equipment} /> */}
-          {/* <SpecificationBlock specifications={vendorData.specifications} /> */}
-          {/* <VendorBlock stats={reviewsData.stats} vendor={vendorData.vendor} /> */}
-          <LocationBlock address={property?.address ?? ''} />
-          <CalenderBlock address={property?.address ?? ''} />
+          <DescriptionBlock 
+            editMode={editMode} 
+            description={editedProperty?.description ?? property?.description ?? ''}
+            onDescriptionChange={(value) =>
+              setEditedProperty({ ...editedProperty, description: value } as Property)
+            }
+          />
+          <LocationBlock 
+            editMode={editMode} 
+            address={editedProperty?.address ?? property?.address ?? ''} 
+            onChange={val => setEditedProperty({ ...editedProperty, address: val } as Property)} 
+          />
+          <CalenderBlock 
+            editMode={editMode} 
+            address={editedProperty?.address ?? property?.address ?? ''} 
+          />
           <ReviewBlock reviewsData={reviewsData} />
           <ChatBlock />
         </div>

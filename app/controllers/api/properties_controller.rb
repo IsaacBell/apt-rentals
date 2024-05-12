@@ -12,8 +12,12 @@ module Api
       render json: user.realtor_stats
     end
 
+    def search
+      render json: properties
+    end
+
     def index
-      render json: user ? user.properties.active : properties.active
+      render json: user ? user.properties : properties
     end
 
     def create
@@ -52,7 +56,15 @@ module Api
 
     def update
       if property
-        if property.update(property_params.except(:coordinates, :phone_number, :images))
+        location = property.location
+        if address.present? && address != property.address
+          result = Geocoder.search(address).first
+          location = "POINT(#{result.longitude} #{result.latitude})" if result.present?
+        end
+
+        if property.update(
+          property_params.except(:coordinates, :phone_number, :images).merge({ location: location })
+        )
           render json: property
         else
           render json: {
@@ -135,6 +147,10 @@ module Api
 
     def coordinates
       @coordinates ||= property_params[:coordinates] || page_params[:coordinates]
+    end
+
+    def address
+      @address ||= property_params[:address] || page_params[:address]
     end
 
     def filters

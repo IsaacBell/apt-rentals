@@ -16,6 +16,8 @@ interface ListingDetailsHeroBlockProps {
   editMode: boolean;
   vendor?: VendorTypes;
   property?: Property | null;
+  editedProperty?: Property | null;
+  onPropertyChange?: (p: Property) => void;
 }
 
 interface ShareIconsProps extends ListingDetailsHeroBlockProps {}
@@ -86,11 +88,12 @@ function ShareMenu({}: ShareMenuProps) {
   );
 }
 
-export default function ListingDetailsHeroBlock({
+export  function _ListingDetailsHeroBlock({
   editMode,
   onEdit,
   onCancelEdit,
   property,
+  editedProperty,
 }: ListingDetailsHeroBlockProps) {
   return (
     <div className="flex justify-between border-b border-gray-lighter pb-6 md:pb-8 2xl:pb-10">
@@ -108,6 +111,95 @@ export default function ListingDetailsHeroBlock({
           <p>{property?.area ?? 0} sq ft.</p>
           <span className="mt-1 block h-1.5 w-1.5 rounded-full bg-gray-dark"></span>
           <p>{property?.rooms ?? 1} room{(property?.rooms ?? 0) > 1 ? 's' : ''}</p>
+        </div>
+      </div>
+      <div className="relative">
+        <ShareMenu />
+        <ShareIcons onEdit={onEdit} onCancelEdit={onCancelEdit} editMode={editMode} />
+      </div>
+    </div>
+  );
+}
+
+export default function ListingDetailsHeroBlock({
+  editMode,
+  onEdit,
+  onCancelEdit,
+  property,
+  onPropertyChange,
+  editedProperty,
+}: ListingDetailsHeroBlockProps) {
+  console.log({property, editedProperty})
+  return (
+    <div className="flex justify-between border-b border-gray-lighter pb-6 md:pb-8 2xl:pb-10">
+      <div>
+        {editMode && property ? (
+          <input
+            type="text"
+            value={property?.address ?? ''}
+            onChange={(e) => onPropertyChange && onPropertyChange({ ...property!, address: e.target.value })}
+            className="text-gray-dark"
+          />
+        ) : (
+          <p className="text-gray-dark">{property?.address ?? ''}</p>
+        )}
+        {editMode && property ? (
+          <input
+            type="text"
+            value={property?.title ?? ''}
+            onChange={(e) => onPropertyChange && onPropertyChange({ ...property!, title: e.target.value })}
+            className="mt-2 !text-2xl uppercase !leading-7 md:!text-[26px] md:!leading-10 2xl:!text-[28px] 4xl:!text-3xl"
+          />
+        ) : (
+          <Text
+            tag="h2"
+            className="mt-2 !text-2xl uppercase !leading-7 md:!text-[26px] md:!leading-10 2xl:!text-[28px] 4xl:!text-3xl"
+          >
+            {property?.title ?? ''}
+          </Text>
+        )}
+        <div className="mt-3 flex items-center gap-2 leading-4 text-gray-dark md:mt-4">
+          {editMode && property ? (
+            <>
+              <input
+                type="number"
+                value={property?.price ?? 0}
+                onChange={(e) => onPropertyChange && onPropertyChange({ ...property!, price: Number(e.target.value || '0') })}
+                className="w-24"
+              />
+              <span>/month</span>
+            </>
+          ) : (
+            <p>${property?.price ?? 0}/month</p>
+          )}
+          <span className="mt-1 block h-1.5 w-1.5 rounded-full bg-gray-dark"></span>
+          {editMode && property ? (
+            <>
+              <input
+                type="number"
+                value={property?.area ?? 0}
+                onChange={(e) => onPropertyChange && onPropertyChange({ ...property!, area: Number(e.target.value ?? '0') })}
+                className="w-24"
+              />
+              <span>sq ft.</span>
+            </>
+          ) : (
+            <p>{property?.area ?? 0} sq ft.</p>
+          )}
+          <span className="mt-1 block h-1.5 w-1.5 rounded-full bg-gray-dark"></span>
+          {editMode && property ? (
+            <>
+              <input
+                type="number"
+                value={property?.rooms ?? 1}
+                onChange={(e) => onPropertyChange && onPropertyChange({ ...property!, rooms: Number(e.target.value) })}
+                className="w-16"
+              />
+              <span>room{property?.rooms && property.rooms > 1 ? 's' : ''}</span>
+            </>
+          ) : (
+            <p>{property?.rooms ?? 1} room{(property?.rooms ?? 0) > 1 ? 's' : ''}</p>
+          )}
         </div>
       </div>
       <div className="relative">

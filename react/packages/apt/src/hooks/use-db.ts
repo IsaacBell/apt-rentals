@@ -99,6 +99,19 @@ export function useDB() {
     return (await res).status === 200;
   }
 
+  const updateProperty = async (updatedProperty: Property): Promise<boolean> => {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${updatedProperty.id}`, {
+      method: 'PUT',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedProperty)
+    });
+  
+    return res.ok;
+  };
+
   const deleteProperty = async (id: string, userId: string): Promise<boolean> => {
     const res = fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${id}`, {
       method: 'DELETE',
@@ -137,6 +150,7 @@ export function useDB() {
     getRealtor,
     saveUser,
     saveProperty,
+    updateProperty,
     deleteProperty,
     supabase,
   };

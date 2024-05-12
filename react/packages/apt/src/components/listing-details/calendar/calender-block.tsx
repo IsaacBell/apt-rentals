@@ -5,9 +5,10 @@ import Section from '@/components/ui/section';
 
 interface CalendarProps {
   address: string;
+  editMode: boolean;
 }
 
-export default function CalenderBlock({address}: CalendarProps) {
+export default function CalenderBlock({address, editMode}: CalendarProps) {
   const dates = {
     checkin: new Date(),
     checkout: new Date(new Date().setDate(new Date().getDate() + 12)),

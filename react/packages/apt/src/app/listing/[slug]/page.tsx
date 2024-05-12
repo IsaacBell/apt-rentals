@@ -18,6 +18,7 @@ export default function ListingDetailsPage({
   const { getProperty } = useDB();
   const [property, setProperty] = useState<Property | null>(null);
   const [propertyLoaded, setPropertyLoaded] = useState<boolean>(false);
+  
   useEffect(() => {
     if (propertyLoaded) return;
     getProperty(slug).then((p: Property) => {

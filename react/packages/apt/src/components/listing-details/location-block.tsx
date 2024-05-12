@@ -5,10 +5,12 @@ import Section from '@/components/ui/section';
 import useAuth from '@/hooks/use-auth';
 
 interface LocationParams {
+  onChange: (val: string) => void;
   address: string;
+  editMode: boolean;
 }
 
-export default function LocationBlock({address}: LocationParams) {
+export default function LocationBlock({address, editMode, onChange}: LocationParams) {
   return (
     <Section
       className="py-5 xl:py-7"
