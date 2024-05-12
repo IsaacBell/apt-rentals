@@ -1,8 +1,8 @@
-# TripFinder Boat Documentation
+# Apartment Search Web Client Documentation
 
 ## Introduction
 
-Fastest E-commerce template built with `React`, `NextJS`, `TypeScript` and `Tailwind CSS`. It's very easy to use, we used `static` data. You can setup your api endpoint's very easily and your frontend team will love using it.
+This is a Next.js app which depends on the Rails back end.
 
 ## Requirements
 
@@ -25,11 +25,7 @@ For getting started with the template you have to follow the below procedure. Fi
 
 ### Step 1 : Configure your env file
 
-Within the project directory you'll find a `.env.example` file just rename it as `.env.local`.
-
-** NOTE : ** This file contain `env values` for local development but when you wanna use this template for your needs you need to replace this value with `your own real API endpoint`.
-
-** NOTE : ** To get the map in development mode, go to your `.env.local` file and put your google map api key there like `NEXT_PUBLIC_GOOGLE_API_KEY= put your api key`
+Within the project directory you'll find a `.env.example` file. Ask a dev for a `.env.local` file.
 
 <br/>
 <br/>
@@ -40,11 +36,8 @@ Within the project directory you'll find a `.env.example` file just rename it as
 Run below command for getting started with this template.
 
 ```bash
-# on tripfinder or in root directory
-$ yarn
-
-$ yarn dev
-# which will running the boat template for development
+$ cd react/packages
+$ yarn start:apt
 ```
 
 If you want to test your production build in local environment then run the below commands.

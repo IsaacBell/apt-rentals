@@ -1,6 +1,6 @@
 'use client';
 
-import { topBoats } from 'public/data/top-boats';
+import { topBoats } from 'public/data/top-apts';
 import ListingCard from '@/components/ui/cards/listing';
 import SeeMore from '@/components/ui/see-more';
 import Section from '@/components/ui/section';

@@ -56,6 +56,7 @@ group :test do
   gem 'capybara'
   gem 'cucumber-rails'
   gem 'database_cleaner-active_record'
+  gem 'factory_bot', '~> 6.4'
   gem 'factory_bot_rails'
   gem 'faker'
   gem 'shoulda-matchers', '~> 6.0'
@@ -71,5 +72,3 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rubocop', '~> 1.54'
 end
-
-gem 'factory_bot', '~> 6.4'

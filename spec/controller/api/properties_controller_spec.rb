@@ -7,12 +7,12 @@ RSpec.describe Api::PropertiesController, type: :controller do
     let!(:deleted_property) { create(:property, deleted: true) }
 
     it 'returns a success response' do
-      get :index
+      get :index, params: { property: {} }
       expect(response).to be_successful
     end
 
     it 'returns only active properties' do
-      get :index
+      get :index, params: { property: {} }
       expect(JSON.parse(response.body).size).to eq(3)
     end
 
@@ -20,7 +20,7 @@ RSpec.describe Api::PropertiesController, type: :controller do
       nearby_property = create(:property, location: 'POINT(-122.4194 37.7749)')
       distant_property = create(:property, location: 'POINT(-73.9857 40.7484)')
 
-      get :index, params: { lat: 37.7749, lng: -122.4194, distance: 1 }
+      get :index, params: { lat: 37.7749, lng: -122.4194, distance: 1, property: {} }
       expect(JSON.parse(response.body)).to include(nearby_property.as_json(root: false))
       expect(JSON.parse(response.body)).not_to include(distant_property)
     end
@@ -29,7 +29,7 @@ RSpec.describe Api::PropertiesController, type: :controller do
       filtered_property = create(:property, rooms: 3, price: 1000)
       unfiltered_property = create(:property, rooms: 2, price: 2000)
 
-      get :index, params: { rooms: 3, price: 1000 }
+      get :index, params: { rooms: 3, price: 1000, property: {} }
       expect(JSON.parse(response.body)).to include(filtered_property.as_json(root: false))
       expect(JSON.parse(response.body)).not_to include(unfiltered_property.as_json(root: false))
     end
@@ -42,9 +42,9 @@ RSpec.describe Api::PropertiesController, type: :controller do
 
     context 'with valid attributes' do
       it 'creates a new property' do
-        expect {
+        expect do
           post :create, params: { property: valid_attributes }
-        }.to change(Property, :count).by(1)
+        end.to change(Property, :count).by(1)
       end
 
       it 'returns the created property' do
@@ -55,18 +55,18 @@ RSpec.describe Api::PropertiesController, type: :controller do
 
     context 'with invalid attributes' do
       it 'does not create a new property' do
-        expect {
-          post :create, params: { property: invalid_attributes }
-        }.not_to change(Property, :count)
+        expect do
+          post :create, params: { property: invalid_attributes, user: { id: realtor.id } }
+        end.not_to change(Property, :count)
       end
 
       it 'returns an unprocessable entity status' do
-        post :create, params: { property: invalid_attributes }
+        post :create, params: { property: invalid_attributes, user: { id: realtor.id } }
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
       it 'returns the error messages' do
-        post :create, params: { property: invalid_attributes }
+        post :create, params: { property: invalid_attributes, user: { id: realtor.id } }
         expect(JSON.parse(response.body)['errors']).to be_present
       end
     end
@@ -151,25 +151,25 @@ RSpec.describe Api::PropertiesController, type: :controller do
 
     context 'with a valid property id' do
       it 'soft deletes the requested property' do
-        expect {
-          delete :destroy, params: { id: property.id }
-        }.to change { property.reload.deleted }.from(false).to(true)
+        expect do
+          delete :destroy, params: { id: property.id, user_id: property.user.id, property: {} }
+        end.to change { property.reload.deleted }.from(false).to(true)
       end
 
       it 'returns a success status' do
-        delete :destroy, params: { id: property.id }
+        delete :destroy, params: { id: property.id, user_id: property.user.id, property: {} }
         expect(response).to have_http_status(:ok)
       end
     end
 
     context 'with an invalid property id' do
       it 'returns a not found status' do
-        delete :destroy, params: { id: 'invalid_id' }
+        delete :destroy, params: { id: 'invalid_id', user_id: property.user.id, property: {} }
         expect(response).to have_http_status(:not_found)
       end
 
       it 'returns an error message' do
-        delete :destroy, params: { id: 'invalid_id' }
+        delete :destroy, params: { id: 'invalid_id', user_id: property.user.id, property: {} }
         expect(JSON.parse(response.body)['error']).to eq('Property not found')
       end
     end

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { topBoats } from 'public/data/top-boats';
+import { topBoats } from 'public/data/top-apts';
 import ListingCard from '@/components/ui/cards/listing';
 import Button from '@/components/ui/button';
 import { useDB } from '@/hooks/use-db';

@@ -1,6 +1,6 @@
 'use client';
 
-import { topBoats } from 'public/data/top-boats';
+import { topBoats } from 'public/data/top-apts';
 import { useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { TabItem, Tablist, TabPanel, TabPanels } from '@/components/ui/tab';

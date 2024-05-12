@@ -7,6 +7,7 @@ class Property < ApplicationRecord
   belongs_to :user
   has_one_attached :preview_image, dependent: :destroy
 
+  validates :title, presence: true
   validate :has_acceptable_image?
 
   scope :active, -> { where(deleted: false, sold: false) }

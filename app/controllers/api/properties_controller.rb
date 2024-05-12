@@ -13,7 +13,8 @@ module Api
     end
 
     def index
-      render json: user ? user.properties : properties
+      get_user = user(exclude_property_params: true)
+      render json: get_user ? get_user.properties : properties
     end
 
     def create
@@ -163,12 +164,18 @@ module Api
       )
     end
 
-    def user
-      @user ||= User.find_by_id(user_id)
+    def user(exclude_property_params: false)
+      @user ||= User.find_by_id(exclude_property_params ? user_id_without_properties : user_id)
     end
 
     def user_id
-      @user_id ||= params.permit(:user_id)[:user_id] || property_params[:user_id] || page_params[:user_id]
+      @user_id ||= params.permit(:user_id)[:user_id] || (if params[:property]
+                                                           property_params[:user_id]
+                                                         end) || page_params[:user_id]
+    end
+
+    def user_id_without_properties
+      @user_id ||= params.permit(:user_id)[:user_id] || page_params[:user_id]
     end
 
     def user_params

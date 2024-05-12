@@ -1,4 +1,4 @@
-export const topBoats = [
+export const topApts = [
   {
     thumbnail: [
       "/images/apts/apt-1.jpeg",
