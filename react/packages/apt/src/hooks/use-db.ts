@@ -41,8 +41,8 @@ export function useDB() {
     return (users ?? [])[0];
   }
 
-  const saveUser = async (user: UserType): Promise<boolean> => {
-    const res = fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+  const saveUser = async (user: any): Promise<boolean> => {
+    const res = fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',

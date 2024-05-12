@@ -34,7 +34,7 @@ module Cachable
     def cache_if_id_present(object)
       return unless object.id.present?
 
-      Rails.cache.redis.set(object.cache_key, object.serialize)
+      Rails.cache.redis.set(object.cache_key, object.to_json)
     rescue StandardError => e
       Bugsnag.notify("Redis Error: #{e.message}")
     end
@@ -72,7 +72,7 @@ module Cachable
     def with_cache_retrieval(id)
       key = cache_key(id)
       cached = Rails.cache.redis.get(key&.to_s)
-      return cached if cached.present?
+      return JSON.parse(cached) if cached.present?
 
       yield
     rescue StandardError => e
@@ -83,7 +83,7 @@ module Cachable
     def cache_if_id_present(object)
       return unless object.id.present?
 
-      Rails.cache.redis.set(object.cache_key, object.serialize)
+      Rails.cache.redis.set(object.cache_key, object.to_json)
     rescue StandardError => e
       Bugsnag.notify("Redis Error: #{e.message}")
     end

@@ -12,6 +12,8 @@ import { SignUpType, signUpSchema } from '@/types';
 import useAuth from '@/hooks/use-auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useDB } from '@/hooks/use-db';
+import { User } from '@supabase/supabase-js';
 
 type UserTypeSelection = 'user' | 'realtor' | null;
 
@@ -19,6 +21,7 @@ export default function SignUpForm() {
   const router = useRouter();
   const [isRealtor, setIsRealtor] = useState<boolean>(false);
   const { register: supabaseRegisterUser } = useAuth();
+  const { saveUser } = useDB();
 
   const {
     register,
@@ -32,9 +35,8 @@ export default function SignUpForm() {
     if (isRealtor)
       data.userType = 'realtor';
     
-    console.log('Submitted data', data);
-    
     supabaseRegisterUser(data, isRealtor);
+    saveUser(data as any)
     router.push(Routes.auth.signIn);
   }
 
@@ -88,7 +90,7 @@ export default function SignUpForm() {
           labelClassName="ml-2"
           inputClassName="!text-gray-dark"
           checked={isRealtor}
-          onClick={() => {
+          onChange={() => {
             setIsRealtor(!isRealtor)
           }}
         />
