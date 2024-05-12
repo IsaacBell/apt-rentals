@@ -11,11 +11,18 @@ export interface Property {
   price: number;
   sold: boolean;
   deleted: boolean;
+  images?: any[];
+  // handle snake and camel case
+  // there are instances when we may need either
+  preview_images?: string[];
+  previewImages?: string[];
+
   location: {
     type: 'Point';
     coordinates: [number, number];
   };
   userId: string;
+  user_id?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -124,7 +131,7 @@ export type ReviewTypes = {
 };
 
 export type ReviewStatsTypes = {
-  totalReview: number;
+  totalReviews: number;
   averageRating: number;
   stars: ReviewBarTypes[];
 };

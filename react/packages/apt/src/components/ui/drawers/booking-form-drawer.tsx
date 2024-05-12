@@ -31,7 +31,7 @@ export default function BookingFormModal() {
       <BookingForm
         price={vendorData.price}
         averageRating={reviewsData.stats.averageRating}
-        totalReviews={reviewsData.stats.totalReview}
+        totalReviews={reviewsData.stats.totalReviews}
         className="mx-auto mt-5 w-full max-w-lg !border-none !shadow-none"
       />
     </div>

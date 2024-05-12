@@ -3,6 +3,7 @@
 import { atomWithStorage } from 'jotai/utils';
 import { atom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
+import { Assembly } from 'transloadit';
 
 const CreateListing = dynamic(
   () => import('@/components/add-listing/steps/create-listing'),
@@ -39,7 +40,8 @@ export const storeAtom = atomWithStorage('addNewProperty', {
   userId: '',
   createdAt: null, // This will be set by the server
   updatedAt: null, // This will be set by the server
-  images: [],
+  images: [] as { id: string; img: string }[],
+  uploadedImages: [] as string[],
   coordinates: [0.0,0.0],
   phoneNumber: '',
   address: '',

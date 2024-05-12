@@ -7,14 +7,20 @@ import { ShareIcon } from '@/components/icons/share-icon';
 import { useModal } from '@/components/modals/context';
 import Text from '@/components/ui/typography/text';
 import Button from '@/components/ui/button';
+import { StopIcon, WrenchIcon } from '@heroicons/react/24/solid';
 
 interface ListingDetailsHeroBlockProps {
+  editButton?: JSX.Element;
+  onEdit?: () => void;
+  onCancelEdit?: () => void;
+  editMode: boolean;
   vendor?: VendorTypes;
-  property: Property | null;
+  property?: Property | null;
 }
 
-// share icons
-function ShareIcons() {
+interface ShareIconsProps extends ListingDetailsHeroBlockProps {}
+
+function ShareIcons(props: ShareIconsProps) {
   const { openModal } = useModal();
   return (
     <div className="mt-1 hidden items-center gap-3 bg-white md:flex 3xl:gap-6">
@@ -35,11 +41,22 @@ function ShareIcons() {
       >
         <HeartIcon className="h-auto w-5" />
       </Button>
+      <Button
+        className="!border-none !bg-gray-lightest !p-4 text-gray-dark hover:!bg-gray-dark hover:text-white"
+        size="sm"
+        variant="outline"
+        rounded="pill"
+      >
+        {!props.editMode && <WrenchIcon className="h-auto w-5" onClick={(e) => props.onEdit && props.onEdit()} />}
+        {props.editMode && <StopIcon className="h-auto w-5" onClick={(e) => props.onCancelEdit && props.onCancelEdit()} />}
+      </Button>
     </div>
   );
 }
 
-function ShareMenu() {
+interface ShareMenuProps {}
+
+function ShareMenu({}: ShareMenuProps) {
   const { openModal } = useModal();
   return (
     <Menu as="div" className="relative md:hidden">
@@ -70,6 +87,9 @@ function ShareMenu() {
 }
 
 export default function ListingDetailsHeroBlock({
+  editMode,
+  onEdit,
+  onCancelEdit,
   property,
 }: ListingDetailsHeroBlockProps) {
   return (
@@ -87,12 +107,12 @@ export default function ListingDetailsHeroBlock({
           <span className="mt-1 block h-1.5 w-1.5 rounded-full bg-gray-dark"></span>
           <p>{property?.area ?? 0} sq ft.</p>
           <span className="mt-1 block h-1.5 w-1.5 rounded-full bg-gray-dark"></span>
-          <p>{property?.rooms} rooms</p>
+          <p>{property?.rooms ?? 1} room{(property?.rooms ?? 0) > 1 ? 's' : ''}</p>
         </div>
       </div>
       <div className="relative">
         <ShareMenu />
-        <ShareIcons />
+        <ShareIcons onEdit={onEdit} onCancelEdit={onCancelEdit} editMode={editMode} />
       </div>
     </div>
   );

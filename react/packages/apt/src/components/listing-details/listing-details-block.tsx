@@ -15,6 +15,7 @@ import ChatBlock from '@/components/listing-details/chat-block';
 import { useModal } from '@/components/modals/context';
 import Button from '@/components/ui/button';
 import { Property } from '@/types';
+import { useState } from 'react';
 
 interface ListingProps {
   property: Property | null;
@@ -22,13 +23,18 @@ interface ListingProps {
 
 export default function ListingDetails({ property }: ListingProps) {
   const { openModal } = useModal();
-  console.log('property addr', property)
+  const [editMode, setEditMode] = useState<boolean>(false);
 
   return (
     <>
       <div className="flex justify-between gap-5 lg:gap-8 xl:gap-12 4xl:gap-16">
         <div className="w-full">
-          <ListingDetailsHeroBlock property={property} />
+          <ListingDetailsHeroBlock 
+            onEdit={() => setEditMode(!editMode)} 
+            onCancelEdit={() => setEditMode(false)}
+            editMode={editMode} 
+            property={property} 
+          />
           <DescriptionBlock description={property?.description ?? ''} />
           {/* <EquipmentBlock equipment={vendorData.equipment} /> */}
           {/* <SpecificationBlock specifications={vendorData.specifications} /> */}
@@ -43,7 +49,7 @@ export default function ListingDetails({ property }: ListingProps) {
             <BookingForm
               price={property?.price ?? 0}
               averageRating={reviewsData.stats.averageRating}
-              totalReviews={reviewsData.stats.totalReview}
+              totalReviews={reviewsData.stats.totalReviews}
             />
             <div className="mt-4 w-full text-center 4xl:mt-8">
               <Button

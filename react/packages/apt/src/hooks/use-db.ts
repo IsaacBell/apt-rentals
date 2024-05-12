@@ -1,6 +1,7 @@
 import { Property, UserType } from '@/types';
 import { SupabaseClient, createClient } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
+import useAuth from './use-auth';
 
 export function useDB() {
   const [supabase, setSupabaseClient] = useState<SupabaseClient | null>(null);
@@ -98,14 +99,14 @@ export function useDB() {
     return (await res).status === 200;
   }
 
-  const deleteProperty = async (id: string): Promise<boolean> => {
-    const res = fetch(`${process.env.NEXT_PUBLIC_API_URL}/properties/${id}`, {
+  const deleteProperty = async (id: string, userId: string): Promise<boolean> => {
+    const res = fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/${id}`, {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ id })
+      body: JSON.stringify({ id, userId })
     })
 
     return (await res).status === 200;

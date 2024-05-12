@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_07_063301) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_12_041654) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
@@ -62,6 +62,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_07_063301) do
     t.uuid "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "preview_images", default: [], array: true
     t.index ["location"], name: "index_properties_on_location", using: :gist
     t.index ["title"], name: "index_properties_on_title"
     t.index ["user_id"], name: "index_properties_on_user_id"

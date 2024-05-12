@@ -59,9 +59,10 @@ export default function Activity() {
     router.push(Routes.public.listingDetails(row.id ?? e.target.id))
   }, []);
   const onDelete = useCallback((e: any, row: any) => {
-    console.log(e.target.id);
-    deleteProperty(row);
-    setProperties(properties.filter(p => p.id === row.id));
+    if (!user && !row.user_id) console.error("Can't Delete: User not found")
+    console.log(e.target.id, row.id);
+    deleteProperty(row.id, row.user_id);
+    setProperties(properties.filter(p => p.id !== row.id));
   }, []);
 
   const columns = useMemo(
@@ -95,7 +96,7 @@ export default function Activity() {
         title: 'Actions',
         key: 'actions',
         render: (record: Property) => (
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4" key={record.id}>
             <button
               id="view"
               className="text-blue-500 hover:text-blue-600"
@@ -150,7 +151,7 @@ export default function Activity() {
         <Pagination
           current={current}
           total={paginatedData.length}
-          pageSize={10}
+          pageSize={50}
           nextIcon="Next"
           prevIcon="Previous"
           variant="solid"

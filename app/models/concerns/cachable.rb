@@ -25,9 +25,7 @@ module Cachable
     end
 
     def delete
-      with_cache_retrieval(id) do
-        update_attributes(deleted: true)
-      end
+      update_column('deleted', true)
       succeeded = save
       clear_from_cache if succeeded
       succeeded

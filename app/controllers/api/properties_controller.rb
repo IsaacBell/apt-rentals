@@ -13,11 +13,11 @@ module Api
     end
 
     def index
-      render json: user ? user.properties : properties
+      render json: user ? user.properties.active : properties.active
     end
 
     def create
-      property = Property.new(property_params.except(:coordinates, :phone_number, :images, :user))
+      property = Property.new(property_params.except(:coordinates, :phone_number, :images, :user, :uploaded_images))
       if coordinates.present? && coordinates.reject(&:zero?).any?
         property.location = "POINT(#{coordinates[0]} #{coordinates[1]})"
       elsif property_params[:location].present?
@@ -25,19 +25,7 @@ module Api
         property.location = "POINT(#{result.longitude} #{result.latitude})" if result.present?
       end
 
-      if page_params[:images].present?
-        last_image = page_params[:images].last
-
-        # Determine the file extension and content type
-        file_extension = File.extname(last_image[:img]).downcase
-
-        # Attach the last image to the preview_image attribute
-        property.preview_image.attach(
-          io: StringIO.new(last_image[:img].split(',').last),
-          filename: "preview#{file_extension}",
-          content_type: content_type(file_extension)
-        )
-      end
+      property.preview_images = property_params[:uploaded_images]
 
       property.user = if u = User.find_by_id(user_id)
                         u
@@ -55,7 +43,7 @@ module Api
     end
 
     def show
-      if property
+      if property && !property.deleted
         render json: property
       else
         render json: { error: 'Property not found' }, status: :not_found
@@ -77,7 +65,7 @@ module Api
     end
 
     def destroy
-      if property
+      if property.present? && property.user_id == user_id
         if property.destroy
           head :ok
         else
@@ -129,7 +117,7 @@ module Api
       params.require(:property).permit(
         :user_id, :area, :description, :title, :preview_image, :rooms, :price, :sold, :location,
         :deleted, :created_at, :updated_at, :phone_number, :user, :address,
-        coordinates: [], images: %i[id img]
+        coordinates: [], uploaded_images: [], images: %i[id img]
       )
     end
 

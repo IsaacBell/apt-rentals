@@ -29,10 +29,9 @@ export default function ListingDetailsPage({
   return (
     <>
       <div className="container-fluid w-full 3xl:!px-12">
-        <GallaryBlock images={vendorData.gallary} />
+        <GallaryBlock images={property?.preview_images ?? property?.previewImages ?? []} />
         <ListingDetails property={property} />
       </div>
-      {/* <SubscriptionBlock sectionClassName="3xl:!px-12 4xl:!px-12" /> */}
     </>
   );
 }

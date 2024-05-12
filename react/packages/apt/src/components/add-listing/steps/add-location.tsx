@@ -13,6 +13,10 @@ import Text from '@/components/ui/typography/text';
 import MapView from '@/components/ui/map-view';
 import useAuth from '@/hooks/use-auth';
 import { useState } from 'react';
+import { useUploader } from '@/hooks/use-uploader';
+import { Assembly } from 'transloadit';
+
+type Img = { id: string; img: string };
 
 const FormDataSchema = z.object({
   address: z.string().optional(),
@@ -24,6 +28,7 @@ const FormDataSchema = z.object({
 type FormDataType = z.infer<typeof FormDataSchema>;
 
 export default function AddLocation() {
+  const { upload } = useUploader();
   const { user, isRealtor } = useAuth();
   const setStep = useSetAtom(stepAtom);
   const [store, setStore] = useAtom(storeAtom);
@@ -44,8 +49,11 @@ export default function AddLocation() {
     resolver: zodResolver(FormDataSchema),
   });
 
-  function handleFormData(data: any) {
-    console.log({data})
+  const handleFormData = async (data: any) => {
+    console.log('submit', {data, store});
+
+    const imgs = store.images ?? data.images  ?? [] as Img[];
+
     const processedData = {
       ...store,
       coordinates,
@@ -53,10 +61,12 @@ export default function AddLocation() {
       location: data.location,
       phoneNumber: data.phoneNumber,
       userId: user?.id ?? store.userId,
-    }
-    setStore(processedData as typeof store);
+      uploadedImages: await upload(imgs),
+    };
+
+    setStore(processedData as unknown as typeof store);
     console.log({processedData});
-    // console.log({store});
+    console.log({store});
 
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties`, {
       method: 'POST',
@@ -113,7 +123,7 @@ export default function AddLocation() {
               labelClassName="lg:!text-base !mb-2 text-gray-dark"
               startIcon={<MapMarkerIcon className="z-10 h-5 w-5" />}
               startIconClassName="left-2"
-              placeholder="Enter your location..."
+              placeholder="Confirm your location..."
               {...register('location')}
             />
             <div className="overflow-hidden rounded-xl">

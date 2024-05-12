@@ -6,6 +6,7 @@ import CreateListingFooter from '@/components/footer/create-listing-footer';
 import { stepAtom, storeAtom } from '@/components/add-listing/add-listing';
 import Text from '@/components/ui/typography/text';
 import Upload from '@/components/ui/upload';
+import { useUploader } from '@/hooks/use-uploader';
 
 let newImgArr: any = [];
 
@@ -15,11 +16,13 @@ export default function AddPropertyPhotos() {
 
   function handleDropAccepted(e: any) {
     e.forEach((item: any) => {
+      console.log((typeof item), {item});
       newImgArr.push({
         id: `upload-${URL.createObjectURL(item)}`,
         img: URL.createObjectURL(item),
       });
     });
+
     console.log(e);
     setStore({ ...store, images: newImgArr });
   }
