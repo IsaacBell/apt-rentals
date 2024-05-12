@@ -4,16 +4,12 @@ module Api
   class PropertiesController < ApiController
     before_action :transform_params
 
-    # def list_for_realtor
-    #   render json: properties
-    # end
-
     def realtor_stats
       render json: user.realtor_stats
     end
 
     def search
-      render json: properties
+      render json: search_properties
     end
 
     def index
@@ -109,6 +105,40 @@ module Api
       ).with_filters(filters).page(page_params[:page] || 1).per(50)
     end
 
+    def search_properties
+      return @search_properties if @search_properties
+
+      properties = Property.active
+      if search_params[:location].present?
+        result = Geocoder.search(search_params[:location]).first
+        properties = if result.present?
+                       properties.within(result.latitude, result.longitude, distance + 50)
+                     else
+                       properties.none
+                     end
+      end
+
+      properties = properties.with_filters(search_filters.except(:user_id))
+
+      @search_properties = properties.page(search_params[:page] || 1).per(50)
+    end
+
+    def search_params
+      params.permit(:page, :lat, :lng, :distance, :area, :rooms, :price, :sold, :location, :property)
+    end
+
+    def search_filters
+      price_range = search_params[:price].split('-') if search_params[:price].present?
+      {
+        area: search_params[:area]&.to_i,
+        rooms: search_params[:rooms]&.to_i,
+        price_gte: price_range&.first&.to_i,
+        price_lte: price_range&.last&.to_i,
+        sold: search_params[:sold],
+        location: search_params[:location]
+      }.compact
+    end
+
     def content_type(file_extension)
       case file_extension
       when '.jpg', '.jpeg'
@@ -153,12 +183,32 @@ module Api
       @address ||= property_params[:address] || page_params[:address]
     end
 
+    def distance
+      return 50 unless search_params[:distance].present?
+
+      search_params[:distance].split(' ')[0].to_i
+    end
+
+    def price_lte
+      return @price_lte if @price_lte
+
+      tmp = search_params[:price]&.split('-')
+      @price_lte = tmp[0].to_i if tmp
+    end
+
+    def price_gte
+      return @price_gte if @price_gte
+
+      tmp = search_params[:price]&.split('-')
+      @price_gte = tmp[1].to_i if tmp
+    end
+
     def filters
       {
         user_id: user_id,
         area: page_params[:area],
         rooms: page_params[:rooms],
-        price: page_params[:price],
+        price_lte: page_params[:price_lte],
         price_gte: params[:price_gte],
         sold: page_params[:sold]
       }.compact

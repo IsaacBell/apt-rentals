@@ -23,10 +23,10 @@ class Property < ApplicationRecord
     out = active
     out = out.where('user_id = ?', filters[:user_id]) if filters[:user_id]
     out = out.where('sold = ?', filters[:sold]) if filters[:sold]
-    out = out.where('area >= ? AND area <= ?', filters[:area]) if filters[:area]
+    # out = out.where('area >= ? AND area <= ?', filters[:area]) if filters[:area]
     out = out.where('rooms = ?', filters[:rooms]) if filters[:rooms]
-    out = out.where('price >= ?', filters[:price]) if filters[:price] && filters[:price_gte]
-    out = out.where('price <= ?', filters[:price]) if filters[:price] && filters[:price_gte]
+    out = out.where('price >= ?', filters[:price_gte]) if filters[:price_gte] && filters[:price_gte]
+    out = out.where('price <= ?', filters[:price_lte]) if filters[:price_lte] && filters[:price_lte]
     out
   }
 

@@ -14,8 +14,7 @@ export default function SubscriptionBlock({
     <BannerBlock
       bgImg="/images/banner/3.jpg"
       title="Subscribe and get exclusive deals & offer"
-      description="Find and book your dream boat. The world's leading luxury 
-      boat comparison site."
+      description="We find the best travel and living options for you. Get in touch!"
       className={className}
       sectionClassName={sectionClassName}
       titleClassName="!text-primary md:!text-white text-2xl 3xl:text-[44px] 3xl:leading-[64px] mb-2 xl:mb-5"

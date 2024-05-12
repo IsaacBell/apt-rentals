@@ -70,6 +70,23 @@ export function useDB() {
     return await res.json();
   };
 
+  const searchProperties = async (params: any): Promise<Property[]> => {
+    const queryParams = new URLSearchParams(params).toString();
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties/search?${queryParams}`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+  
+    if (!res.ok) {
+      throw new Error('Failed to fetch properties');
+    }
+  
+    return await res.json();
+  };
+
   const getProperties = async (userId: string): Promise<Property[]> => {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/properties?user_id=${userId}`, {
       method: 'GET',
@@ -152,6 +169,7 @@ export function useDB() {
     saveProperty,
     updateProperty,
     deleteProperty,
+    searchProperties,
     supabase,
   };
 }

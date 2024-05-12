@@ -1,13 +1,32 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { topBoats } from 'public/data/top-boats';
 import ListingCard from '@/components/ui/cards/listing';
 import Button from '@/components/ui/button';
+import { useDB } from '@/hooks/use-db';
+import { Property } from '@/types';
+import { useSearchParams } from 'next/navigation';
 
 export default function ExploreListings() {
+  const { searchProperties } = useDB();
+  const searchParams = useSearchParams();
+
   const [list, setList] = useState(12);
   const [isLoading, setIsLoading] = useState(false);
+  const [properties, setProperties] = useState<Property[]>([]);
+
+  useEffect(() => {
+    if (!searchParams) return;
+    console.info({ searchParams });
+
+    const params = Object.fromEntries(searchParams.entries());
+    setIsLoading(true);
+    searchProperties(params)
+      .then((res) => setProperties(res))
+      .finally(() => setIsLoading(false));
+  }, [searchParams]);
+
   function handleLoadMore() {
     setIsLoading(true);
     setTimeout(() => {
@@ -15,26 +34,29 @@ export default function ExploreListings() {
       setIsLoading(false);
     }, 600);
   }
+
   return (
     <div>
       <div className="mt-1 grid grid-cols-1 gap-x-5 gap-y-8 xs:grid-cols-2 lg:grid-cols-3 3xl:gap-y-10 4xl:grid-cols-4">
-        {topBoats.slice(0, list).map((item, index) => (
+        {isLoading && <p>Loading...</p>}
+        {!properties.length && !isLoading && <p>No Properties Found</p>}
+        {!isLoading && properties.slice(0, list).map((item, index) => (
           <ListingCard
-            key={`explore-boat-${index}`}
-            id={`explore-boat-${index}`}
-            slides={item.thumbnail}
-            time={item.time}
-            caption={item.caption}
+            key={`explore-apt-${index}`}
+            id={`explore-apt-${index}`}
+            slides={item.preview_images ?? item.previewImages ?? []}
+            time={item.createdAt}
+            caption={item.description}
             title={item.title}
-            slug={item.slug}
-            location={item.location}
-            price={item.price}
-            ratingCount={item.ratingCount}
-            rating={item.rating}
+            slug={item.id}
+            location={item.address}
+            price={String(item.price)}
+            ratingCount={'12'}
+            rating={4.8}
           />
         ))}
       </div>
-      {topBoats.length >= list && (
+      {properties.length >= 50 && (
         <Button
           size="xl"
           type="button"

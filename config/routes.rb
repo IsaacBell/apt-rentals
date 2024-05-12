@@ -6,9 +6,16 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     # mount_devise_token_auth_for 'User', at: 'auth'
     resources :users
-    resources :properties
+
+    resources :properties do
+      collection do
+        get 'search'
+      end
+    end
+
     get '/properties', to: 'properties#list_for_realtor'
     get '/realtor/stats', to: 'properties#realtor_stats'
+    # get '/properties/search', to: 'properties#search'
 
     resources :users do
       resources :properties
