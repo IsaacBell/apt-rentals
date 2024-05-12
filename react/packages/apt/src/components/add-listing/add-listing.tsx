@@ -4,6 +4,10 @@ import { atomWithStorage } from 'jotai/utils';
 import { atom, useAtomValue } from 'jotai';
 import dynamic from 'next/dynamic';
 import { Assembly } from 'transloadit';
+import { useDB } from '@/hooks/use-db';
+import useAuth from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
+import { Routes } from '@/config/routes';
 
 const CreateListing = dynamic(
   () => import('@/components/add-listing/steps/create-listing'),
@@ -48,6 +52,12 @@ export const storeAtom = atomWithStorage('addNewProperty', {
 });
 
 export default function AddListing() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const userType = user?.user_metadata?.userType ?? user?.userType ?? '';
+  if (userType === 'user') router.push(Routes.public.explore);
+
   let stepComponent;
   const step = useAtomValue(stepAtom);
   switch (step) {

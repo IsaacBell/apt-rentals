@@ -7,11 +7,14 @@ import useAuth from '@/hooks/use-auth';
 import { Menu, Transition } from '@headlessui/react';
 import Avatar from '@/components/ui/avatar';
 import { Routes } from '@/config/routes';
+import { useRouter } from 'next/navigation';
 
 interface MenuItemProps {
   text: string;
   link?: string;
 }
+
+const getInitials = (name: string) => name.split(" ").map((n)=>n[0]).join(".");
 
 const menu = {
   top: [
@@ -63,7 +66,10 @@ function MenuItem({ text, link }: MenuItemProps) {
 }
 
 export default function ProfileMenu({ className }: { className?: string }) {
+  const router = useRouter();
   const { user, unauthorize } = useAuth();
+
+  if (!user) return <></>
 
   return (
     <>
@@ -81,6 +87,7 @@ export default function ProfileMenu({ className }: { className?: string }) {
             rounded="full"
             size="100%"
           /> */}
+          {user?.name ? getInitials(user?.name ?? '') : ''}
         </Menu.Button>
         <Transition
           as={Fragment}
@@ -104,7 +111,10 @@ export default function ProfileMenu({ className }: { className?: string }) {
               <Menu.Item
                 className="block w-full rounded-sm px-5 py-2 text-left   text-base font-normal text-gray-dark hover:bg-gray-lightest"
                 as="button"
-                onClick={() => unauthorize()}
+                onClick={() => {
+                  unauthorize();
+                  router.push(Routes.public.home);
+                }}
               >
                 Log out
               </Menu.Item>

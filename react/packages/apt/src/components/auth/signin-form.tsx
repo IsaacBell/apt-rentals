@@ -50,8 +50,9 @@ export default function SigninForm() {
     authorize(data.email, data.password).then(_user => {
       user = _user;
       console.log('authorized user: ', user);
+      const userType = user?.user_metadata?.userType ?? user?.userType ?? 'user';
       if (!!user) 
-        router.push(Routes.public.addListing);
+        router.push(userType === 'realtor' ? Routes.public.addListing : Routes.public.explore);
     })
   }
 

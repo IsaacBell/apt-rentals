@@ -141,10 +141,16 @@ export default function useAuth() {
     if (!supabase) return;
 
     const { error } = await supabase.auth.signOut();
-
+    
     if (error) {
       console.error('Error signing out:', error.message);
+      return;
     }
+
+    setUser(null);
+    setSession(null);
+    localStorage.removeItem('user')
+    localStorage.removeItem('session')
   };
 
   return {

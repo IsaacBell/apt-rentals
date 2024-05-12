@@ -32,21 +32,16 @@ const menuItems = [
     label: 'Other Pages',
     path: '',
     dropdownItems: [
-      {
-        id: 1,
-        label: 'Example Realtor Profile',
-        path: Routes.public.userID('fabio-jaction'),
-      },
       // {
       //   id: 2,
       //   label: 'Listing Details',
       //   path: '/listing/perfect-set-up-for-lake-union-cruising',
       // },
-      {
-        id: 3,
-        label: 'Coming Soon',
-        path: '#',
-      },
+      // {
+      //   id: 3,
+      //   label: 'Coming Soon',
+      //   path: '#',
+      // },
       {
         id: 4,
         label: 'Sign In',
@@ -61,6 +56,11 @@ const menuItems = [
         id: 6,
         label: 'Forgot Password',
         path: Routes.auth.forgotPassword,
+      },
+      {
+        id: 7,
+        label: 'Example Realtor Profile',
+        path: Routes.public.userID('fabio-jaction'),
       },
     ],
   },
