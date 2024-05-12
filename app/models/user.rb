@@ -65,8 +65,6 @@ class User < ApplicationRecord
   end
 
   def realtor_stats
-    return {} unless realtor?
-
     stats = properties.select("
       COUNT(*) AS total_properties,
       AVG(price) AS average_price,

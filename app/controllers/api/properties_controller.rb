@@ -5,7 +5,7 @@ module Api
     before_action :transform_params
 
     def realtor_stats
-      render json: user.realtor_stats
+      render json: user&.realtor_stats
     end
 
     def search

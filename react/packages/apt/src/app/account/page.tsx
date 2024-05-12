@@ -19,6 +19,7 @@ export default function DashboardPage() {
     data[0].order = stats?.total_properties
     data[1].price = stats?.average_price
     data[2].price = stats?.total_price
+    console.log('user stats', data);
 
     return data;
   }
