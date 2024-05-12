@@ -12,7 +12,7 @@ export default function SubscriptionBlock({
 }) {
   return (
     <BannerBlock
-      bgImg="/images/banner/3.jpg"
+      bgImg="/images/apts/apt-8.jpeg"
       title="Subscribe and get exclusive deals & offer"
       description="We find the best travel and living options for you. Get in touch!"
       className={className}

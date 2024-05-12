@@ -30,13 +30,13 @@ function BoatGrid() {
   );
 }
 
-export default function TopBoats() {
+export default function TopApts() {
   const { state } = useTimeout();
 
   return (
     <Section
       className="group/section container-fluid mt-12 overflow-hidden lg:mt-16"
-      title="Top boat rentals"
+      title="Top rentals"
       description="Unsatiable it considered invitation he traveling insensible."
       headerClassName="items-end mb-4 md:mb-5 xl:mb-6 gap-5"
       rightElement={<SeeMore />}

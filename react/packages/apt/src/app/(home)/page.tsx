@@ -15,7 +15,6 @@ export default function HomePage() {
       <InstructionBlock />
       <TopBoats />
       <PromotionalBlock />
-      <NewBoats />
       <TestimonialBlock />
       <SubscriptionBlock sectionClassName="4xl:!px-16" />
     </>
