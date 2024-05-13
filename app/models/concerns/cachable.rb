@@ -12,32 +12,36 @@ module Cachable
       2.hours
     end
 
-    def update(**attrs)
-      out = super(attrs)
-      cache_if_id_present(out)
-      out
+    def cache_key
+      "#{self.class.to_s.demodulize.underscore}:#{id}"
+    end
+
+    def update(attrs)
+      super(attrs)
+      cache_if_id_present(self)
+      true
+    rescue ActiveRecord::NotNullViolation => e
+      false
     end
 
     def delete
-      with_cache_retrieval do
-        update_attributes(deleted: true)
-      end
+      update_column('deleted', true)
       succeeded = save
       clear_from_cache if succeeded
       succeeded
     end
 
-    alias_method :destroy, :delete
-
-    private
-
     def cache_if_id_present(object)
       return unless object.id.present?
 
-      Rails.cache.redis.set(object.cache_key, object.serialize)
+      Rails.cache.redis.set(object.cache_key, object.to_json)
     rescue StandardError => e
       Bugsnag.notify("Redis Error: #{e.message}")
     end
+
+    alias_method :destroy, :delete
+
+    private
 
     def clear_from_cache
       Rails.cache.redis.del(cache_key)
@@ -51,19 +55,24 @@ module Cachable
       self.cache_expiry = time
     end
 
-    def find(id)
-      with_cache_retrieval { super(id) }
+    def cache_key(id)
+      "#{name.underscore}:#{id}"
     end
 
-    def create(**attrs)
+    def find(id)
+      with_cache_retrieval(id) { super(id) }
+    end
+
+    def create(attrs)
       out = super(attrs)
       cache_if_id_present(out)
       out
     end
 
-    def with_cache_retrieval(key = cache_key)
+    def with_cache_retrieval(id)
+      key = cache_key(id)
       cached = Rails.cache.redis.get(key&.to_s)
-      return cached if cached.present?
+      return JSON.parse(cached) if cached.present?
 
       yield
     rescue StandardError => e
@@ -74,7 +83,7 @@ module Cachable
     def cache_if_id_present(object)
       return unless object.id.present?
 
-      Rails.cache.redis.set(object.cache_key, object.serialize)
+      Rails.cache.redis.set(object.cache_key, object.to_json)
     rescue StandardError => e
       Bugsnag.notify("Redis Error: #{e.message}")
     end

@@ -1,0 +1,31 @@
+{
+  "name": "tripfinder",
+  "description": "react next app",
+  "version": "5.2.2",
+  "private": true,
+  "author": "TopTal, Inc",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "clean": "lerna clean --yes && rimraf node_modules",
+    "clean:build": "lerna exec -- rimraf \"{.next,dist,out,build,.docz,.firebase}\"",
+   
+    "start:apt": "yarn workspace @tripfinder/apt run dev",
+    "build:apt": "yarn workspace @tripfinder/apt run build",
+    "serve:apt": "yarn workspace @tripfinder/apt run start",
+    "lint:apt": "yarn workspace @tripfinder/apt run lint",
+    "format:apt": "yarn workspace @tripfinder/apt run format",
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "husky": "^9.0.11",
+    "lerna": "^8.1.2",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "serve": "^14.2.0"
+  }
+}

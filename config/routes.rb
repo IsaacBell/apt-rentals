@@ -5,20 +5,26 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
     # mount_devise_token_auth_for 'User', at: 'auth'
-    resources :tasks, only: %i[index show create update destroy]
-    resources :soapstones
-    resources :commands
     resources :users
-    # resources :users do
-    #   resources :commands
-    #   resources :soapstones
-    # end
+
+    resources :properties do
+      collection do
+        get 'search'
+      end
+    end
+
+    get '/properties', to: 'properties#list_for_realtor'
+    get '/realtor/stats', to: 'properties#realtor_stats'
+    # get '/properties/search', to: 'properties#search'
+
+    resources :users do
+      resources :properties
+    end
   end
 
-  devise_for :users
+  # devise_for :users
 
-  post 'upload', to: 'incidents#create', as: 'upload'
-  root 'home#index'
+  # root 'home#index'
 end
 
 if Rails.env.production?

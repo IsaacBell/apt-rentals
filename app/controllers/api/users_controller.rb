@@ -12,33 +12,36 @@ module Api
     def show; end
 
     def create
-      if (u = User.create(user_params))
-        render json: u.serialize
+      user_params[:phone_number] = user_params[:phone]
+
+      if (u = User.create(user_params.except(:phone, :password, :password_conf)))
+        render json: u
       else
-        render head: :unprocessable_entity
+        head :unprocessable_entity
       end
     end
 
     def update
       if user&.update_attributes(user_params)
-        render json: user.serialize
+        render json: user
       else
-        render head: :conflict
+        head :conflict
       end
     end
 
     def destroy
       if user&.delete
-        render head: :ok
+        head :ok
       else
-        render head: :bad_request
+        head :bad_request
       end
     end
 
     private
 
     def user
-      @user ||= User.find_by_uid(params.require(:uid))&.serialize
+      id = params[:id] || user_params[:id]
+      @user ||= User.find_by_id(id)
     end
 
     def users
@@ -49,7 +52,7 @@ module Api
       params
         .require(:user)
         .permit(
-          :uid, :email, :password, :password_conf, :phone, :newsletter_opt_in
+          :id, :email, :password, :password_conf, :phone, :newsletter_opt_in
         )
     end
   end

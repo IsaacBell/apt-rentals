@@ -2,8 +2,22 @@ require_relative 'boot'
 
 require 'rails'
 
-# require "active_record/railtie" rescue LoadError
-# require "active_storage/engine" rescue LoadError
+begin
+  require 'active_record/railtie'
+rescue StandardError
+  LoadError
+end
+begin
+  require 'active_storage/engine'
+rescue StandardError
+  LoadError
+end
+begin
+  require 'devise/orm/active_record'
+rescue StandardError
+  LoadError
+end
+
 begin
   require 'action_controller/railtie'
 rescue StandardError
@@ -46,6 +60,8 @@ module HelpApp
     config.load_defaults 7.0
     config.active_job.queue_adapter = :sidekiq
     config.action_cable.mount_path = '/websocket'
+    config.action_controller.forgery_protection_origin_check = false
+    config.action_controller.forgery_protection_origin_check = ['http://localhost:3000', 'http://127.0.0.1:3005']
 
     config.generators do |g|
       g.orm :active_record

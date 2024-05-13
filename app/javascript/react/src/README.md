@@ -8,7 +8,7 @@ This folder holds the React web UI. It is currently bundled within the core app,
 
 ## Authentication
 
-Firbase auth is provided.
+Firebase auth is provided.
 
 For more information on the Typescript interface which will be involved, see [Firebase Interface](#firebase-interface) below.
 
