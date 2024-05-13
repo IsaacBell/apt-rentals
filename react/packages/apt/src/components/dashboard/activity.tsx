@@ -61,8 +61,8 @@ export default function Activity() {
   const onDelete = useCallback((e: any, row: any) => {
     if (!user && !row.user_id) console.error("Can't Delete: User not found")
     console.log(e.target.id, row.id);
-    deleteProperty(row.id, row.user_id);
-    setProperties(properties.filter(p => p.id !== row.id));
+    deleteProperty(row.id, row.user_id ?? user?.id);
+    setProperties(prevProperties => prevProperties.filter(p => p.id !== row.id));
   }, []);
 
   const columns = useMemo(
