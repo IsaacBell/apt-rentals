@@ -123,7 +123,7 @@ export function useDB() {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(updatedProperty)
+      body: JSON.stringify({property: updatedProperty})
     });
   
     return res.ok;

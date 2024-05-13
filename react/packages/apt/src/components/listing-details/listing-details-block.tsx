@@ -35,7 +35,7 @@ export default function ListingDetails({ property }: ListingProps) {
 
   const handleSave = async () => {
     if (editedProperty) {
-      const success = await updateProperty(editedProperty);
+      const success = await updateProperty(editedProperty ?? property);
       if (success) {
         setEditMode(false);
       }
