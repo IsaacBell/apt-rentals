@@ -2,6 +2,10 @@
 
 This API stores and provides info on properties in the system.
 
+## Video Demo
+
+https://drive.google.com/file/d/1z7HNq0GZu8D9aZtlstdQ1auVQ6XAa3eJ/view?usp=sharing
+
 ### Dependencies
 
 - Ruby 3.3.1
