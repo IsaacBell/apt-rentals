@@ -71,13 +71,14 @@ export function useUploader() {
   
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('images')
-          .upload(`public/${user?.id ?? 'anon-user'}-${fileName}`, file);
+          .upload(data.id, file);
+          // .upload(`public/${user?.id ?? 'anon-user'}-${fileName}`, file);
   
         if (uploadError) {
           throw uploadError;
         }
   
-        const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/public/${fileName}`;
+        const publicUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/images/${data.id}`;
         uploadedImages.push(publicUrl);
       } catch (error) {
         console.error(`Error uploading image ${data.id}:`, error);
